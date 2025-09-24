@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  email     String?   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model Post {
+  id        String @id @default(uuid())
+  title     String
+  style     Int
+  category  Category
+  author    String      @default("Hamba_Allah")
+  createdAt DateTime    @default(now())
+
+  blocks    PostBlock[]
+}
+
+model PostBlock {
+  id        String   @id @default(uuid())
+  type      BlockType
+  content   String?  
+  order     Int
+  postId    String
+  post      Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  image     Image?
+}
+
+model Image {
+  id        String   @id @default(uuid())
+  url       String
+  caption   String?
+  blockId   String      @unique
+  publicId  String?
+  block     PostBlock @relation(fields: [blockId], references: [id], onDelete: Cascade)
+}
+
+model Teacher {
+  id       String @id @default(uuid())
+  name     String
+  nip      String @unique
+  jabatan  String
+  pesan    String
+  imageUrl String?
+  publicId String?
+}
+
+model VisiMisi {
+  id     String   @id @default(uuid())
+  visi   String
+  misi   String
+}
+
+model Contact {
+  id      String   @id @default(uuid())
+  email   String
+  address String
+  phone   String
+}
+
+model Sosmed {
+  id String   @id @default(uuid())
+  sosmedName String
+  sosmedUrl String @default("www.example.com")
+}
+
+enum Category {
+  BERITA
+  INFO
+  PENGUMUMAN
+  PRESTASI
+  PPDB
+}
+
+enum BlockType {
+  PARAGRAPH
+  IMAGE
+  VIDEO
+}
