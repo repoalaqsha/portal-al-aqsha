@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 export function DeletePostButton({ postId }: { postId: string }) {
   const queryClient = useQueryClient();
@@ -28,7 +29,8 @@ export function DeletePostButton({ postId }: { postId: string }) {
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] }); // refresh daftar post
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      toast.success("Berhasil Menghapus");
     },
   });
 
@@ -38,10 +40,10 @@ export function DeletePostButton({ postId }: { postId: string }) {
         <Button
           variant="destructive"
           size="sm"
-          className="flex items-center gap-2 w-full hover:bg-red-400"
+          className="flex items-center gap-2 w-full hover:bg-red-400 cursor-pointer"
         >
+          Hapus post?
           <Trash2 className="w-4 h-4" />
-          Hapus
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

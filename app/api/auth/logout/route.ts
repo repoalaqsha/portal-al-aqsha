@@ -9,7 +9,7 @@ export async function POST() {
     { status: 200 }
   );
 
-  allCookies.forEach((cookie:any) => {
+  allCookies.forEach((cookie) => {
     response.cookies.set({
       name: cookie.name,
       value: "",

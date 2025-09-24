@@ -9,7 +9,7 @@ const TeacherCarousel = dynamic(() => import("@/components/teacher-carousel"), {
 
 export default function Page() {
   return (
-    <div>
+    <div className="w-[90%] max-w-6xl mx-auto px-4">
       <TeacherCarousel />
     </div>
   );

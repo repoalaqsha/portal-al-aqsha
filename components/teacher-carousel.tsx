@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import TeacherFormModal from "@/components/teacher-form-modal";
 import { useAuth } from "@/hooks/useAuth";
-import Loading from "@/app/loading";
 import LoadingText from "@/app/loading";
 
 
@@ -37,7 +36,7 @@ const [showLoading, setShowLoading] = useState(true);
  }
 
   return (
-    <div className="relative ">
+    <div className="relative w-full col-span-1 lg:col-span-6 mb-20 lg:mb-0">
       <div className="flex justify-between  items-center mb-4">
         <h2 className="text-xl font-bold">Daftar Guru</h2>
         {user && (
@@ -57,19 +56,19 @@ const [showLoading, setShowLoading] = useState(true);
           {teachers?.map((t: any) => (
             <Card
               key={t.id}
-              className="w-[15rem] h-[22rem] m-2 flex-shrink-0 shadow-md"
+              className="w-[15rem] h-[22rem] m-2 flex-shrink-0 shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cur"
             >
-              <CardContent className="p- flex flex-col items-center justify-between h-full">
+              <CardContent className=" flex flex-col items-center justify-between h-full cursor-grab active:cursor-grabbing">
                 <div className="flex flex-col items-center">
                   <Image
                     src={t.imageUrl}
                     alt={t.name}
                     width={120}
                     height={120}
-                    className="object-cover w-40 h-40"
+                    className="object-cover w-60 h-50"
                     loading="lazy"
                   />
-                  <h3 className="mt-6 font-bold text-center capitalize">
+                  <h3 className="mt-6 font-bold text-center capitalize ">
                     {t.name}
                   </h3>
                   <p className="text-sm text-gray-500 capitalize">

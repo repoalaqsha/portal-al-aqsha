@@ -7,6 +7,7 @@ import PostsAside from "@/components/berita-aside";
 import { IoLocationOutline } from "react-icons/io5";
 import { AiOutlineMail } from "react-icons/ai";
 import { BsTelephone } from "react-icons/bs";
+import KepsekReveal from "@/components/kepsek-reveal";
 export default function Home() {
   return (
     <div className="w-full mx-auto">
@@ -54,9 +55,9 @@ export default function Home() {
             </div>
           </aside>
         </Reveal>
-
-        {/* Sambutan Kepala Sekolah */}
-        <main className="lg:col-span-6">
+        
+        <KepsekReveal>
+          <main className="w-full ">
           <h1 className="text-3xl font-bold text-teal-600 mb-4">
             Sambutan Kepala Sekolah
           </h1>
@@ -77,6 +78,9 @@ export default function Home() {
             </p>
           </div>
         </main>
+          </KepsekReveal>
+
+        
         <Reveal>
           <PostsAside category="BERITA" />
         </Reveal>

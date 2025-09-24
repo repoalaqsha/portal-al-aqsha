@@ -1,7 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+  DroppableProvided,
+  DraggableProvided,
+} from "@hello-pangea/dnd";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,6 +16,7 @@ import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import { getYoutubeEmbedUrl } from "@/utils/youtube";
 import { DeletePostButton } from "./btn-delete-post";
+import { Trash2 } from "lucide-react";
 
 type Block = {
   id: string;
@@ -177,6 +185,9 @@ export default function PostForm({
   // ================= EDIT MODE =================
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-4">
+      {mode === "edit" && initialData?.id && (
+        <DeletePostButton postId={initialData.id} />
+      )}
       <Input
         placeholder="Judul"
         value={title}
@@ -218,102 +229,113 @@ export default function PostForm({
 
       <DragDropContext onDragEnd={handleDragEnd}>
         <Droppable droppableId="blocks">
-          {(provided: any) => (
+          {(provided: DroppableProvided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
               {blocks.map((block, index) => (
                 <Draggable key={block.id} draggableId={block.id} index={index}>
-                  {(provided: any) => (
+                  {(provided: DraggableProvided) => (
                     <Card
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
-                      className="p-3 my-2 space-y-2"
+                      className="p-3 my-2 cursor-grab active:cursor-grabbing"
                     >
-                      {/* isi block */}
-                      {block.type === "PARAGRAPH" && (
-                        <Textarea
-                          placeholder="Isi paragraf"
-                          value={block.content}
-                          onChange={(e) =>
-                            updateBlock(block.id, { content: e.target.value })
-                          }
-                        />
-                      )}
+                      <div className="flex justify-between items-start gap-4">
+                        <div className="flex-1 space-y-2">
+                          {/* isi block */}
+                          {block.type === "PARAGRAPH" && (
+                            <Textarea
+                              placeholder="Isi paragraf"
+                              value={block.content}
+                              onChange={(e) =>
+                                updateBlock(block.id, {
+                                  content: e.target.value,
+                                })
+                              }
+                            />
+                          )}
 
-                      {block.type === "VIDEO" && (
-                        <div className="space-y-2">
-                          <Input
-                            placeholder="Link YouTube / Vimeo"
-                            value={block.content}
-                            onChange={(e) =>
-                              updateBlock(block.id, { content: e.target.value })
-                            }
-                          />
-                          {block.content && (
-                            <div className="aspect-video">
-                              <iframe
-                                src={getYoutubeEmbedUrl(block.content)}
-                                className="w-full h-full rounded"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
+                          {block.type === "VIDEO" && (
+                            <div className="space-y-2">
+                              <Input
+                                placeholder="Link YouTube / Vimeo"
+                                value={block.content}
+                                onChange={(e) =>
+                                  updateBlock(block.id, {
+                                    content: e.target.value,
+                                  })
+                                }
+                              />
+                              {block.content && (
+                                <div className="aspect-video">
+                                  <iframe
+                                    src={getYoutubeEmbedUrl(block.content)}
+                                    className="w-full h-full rounded"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                  />
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {block.type === "IMAGE" && (
+                            <div className="space-y-2">
+                              {block.file ? (
+                                <Image
+                                  src={URL.createObjectURL(block.file)}
+                                  alt="preview baru"
+                                  width={300}
+                                  height={200}
+                                  className="rounded"
+                                />
+                              ) : block.url ? (
+                                <Image
+                                  src={block.image?.url || block.url || ""}
+                                  alt={block.image?.caption || "Gambar"}
+                                  width={300}
+                                  height={200}
+                                  className="rounded"
+                                />
+                              ) : (
+                                <p className="text-sm text-gray-500">
+                                  Belum ada gambar
+                                </p>
+                              )}
+
+                              <Input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => {
+                                  if (e.target.files?.[0]) {
+                                    updateBlock(block.id, {
+                                      file: e.target.files[0],
+                                    });
+                                  }
+                                }}
+                              />
+
+                              <Input
+                                placeholder="Caption"
+                                value={block.caption}
+                                onChange={(e) =>
+                                  updateBlock(block.id, {
+                                    caption: e.target.value,
+                                  })
+                                }
                               />
                             </div>
                           )}
                         </div>
-                      )}
-
-                      {block.type === "IMAGE" && (
-                        <div className="space-y-2">
-                          {block.file ? (
-                            <Image
-                              src={URL.createObjectURL(block.file)}
-                              alt="preview baru"
-                              width={300}
-                              height={200}
-                              className="rounded"
-                            />
-                          ) : block.url ? (
-                            <Image
-                              src={block.image?.url || block.url || ""}
-                              alt={block.image?.caption || "Gambar"}
-                              width={300}
-                              height={200}
-                              className="rounded"
-                            />
-                          ) : (
-                            <p className="text-sm text-gray-500">
-                              Belum ada gambar
-                            </p>
-                          )}
-
-                          <Input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => {
-                              if (e.target.files?.[0]) {
-                                updateBlock(block.id, {
-                                  file: e.target.files[0],
-                                });
-                              }
-                            }}
-                          />
-
-                          <Input
-                            placeholder="Caption"
-                            value={block.caption}
-                            onChange={(e) =>
-                              updateBlock(block.id, { caption: e.target.value })
-                            }
-                          />
-                        </div>
-                      )}
-
-                      <Button
-                        variant="destructive"
-                        onClick={() => removeBlock(block.id)}
-                      >
-                        Hapus Block
-                      </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => removeBlock(block.id)}
+                          className="shrink-0"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </Card>
                   )}
                 </Draggable>
@@ -338,9 +360,6 @@ export default function PostForm({
       >
         Batal
       </Button>
-      {mode === "edit" && initialData?.id && (
-        <DeletePostButton postId={initialData.id} />
-      )}
     </div>
   );
 }

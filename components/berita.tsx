@@ -16,7 +16,7 @@ async function fetchPosts({
   category?: string;
 }) {
   const url = new URL("/api/posts", window.location.origin);
-  url.searchParams.set("limit", "5");
+  url.searchParams.set("limit", "3");
   if (category) url.searchParams.set("category", category);
   if (pageParam) url.searchParams.set("cursor", String(pageParam));
 
