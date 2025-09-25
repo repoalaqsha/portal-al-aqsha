@@ -6,38 +6,33 @@ import { useRef } from "react";
 export default function HomePage() {
   const targetRef = useRef(null);
 
-  // Scroll tracking untuk animasi progresif
+  // Track scroll section "about"
   const { scrollYProgress } = useScroll({
     target: targetRef,
     offset: ["0 1", "1 1"],
-    // "0 1" => top of section ketemu bottom viewport
-    // "1 1" => bottom of section ketemu bottom viewport
   });
 
-  // Animasi dinamis bergantung scroll
-  const scale = useTransform(scrollYProgress, [0, 1], [0.95, 1.1]);
-  const rotate = useTransform(scrollYProgress, [0, 1], [-5, 0]);
+  // Scale dari kecil (0.5) ke normal (1)
+  const scale = useTransform(scrollYProgress, [0, 1], [0.8, 1]);
+  // Bisa kasih sedikit fade biar smooth
+  const opacity = useTransform(scrollYProgress, [0, 1], [0.3, 1]);
 
   return (
-    <div className="space-y-40 p-10">
+    <div className="space-y-40 p-">
       {/* Hero */}
       <section className="h-screen flex items-center justify-center bg-gray-200">
-  
-          <h1 className="text-4xl font-bold">Hero Section</h1>
-      
+        <h1 className="text-4xl font-bold">Hero Section</h1>
       </section>
 
-      {/* About dengan kombinasi animasi */}
+      {/* About dengan animasi scale on scroll */}
       <motion.section
         ref={targetRef}
         id="about"
-        // Animasi sekali saat masuk viewport
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        // Animasi progresif saat scroll
-        style={{ scale, rotate }}
+        style={{ scale, opacity }}
         className="h-screen flex items-center justify-center bg-green-200"
       >
         <h2 className="text-4xl font-bold">About Section 🚀</h2>

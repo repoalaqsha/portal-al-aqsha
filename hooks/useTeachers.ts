@@ -13,6 +13,17 @@ export function useTeachers() {
   });
 }
 
+export function useHeadTeachers() {
+  const { data, ...rest } = useTeachers();
+
+  return {
+    data:
+      data?.filter((t:any) => t.jabatan?.toLowerCase() === "kepala sekolah") ?? [],
+    ...rest,
+  };
+}
+
+
 export function useCreateTeacher() {
   const queryClient = useQueryClient();
   return useMutation({

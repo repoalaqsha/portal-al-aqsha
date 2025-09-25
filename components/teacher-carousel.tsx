@@ -36,7 +36,7 @@ const [showLoading, setShowLoading] = useState(true);
  }
 
   return (
-    <div className="relative w-full col-span-1 lg:col-span-6 mb-20 lg:mb-0">
+    <div className="relative w-full col-span-1 lg:col-span-6 mb-20 lg:mb-0 pt-8">
       <div className="flex justify-between  items-center mb-4">
         <h2 className="text-xl font-bold">Daftar Guru</h2>
         {user && (
@@ -56,7 +56,7 @@ const [showLoading, setShowLoading] = useState(true);
           {teachers?.map((t: any) => (
             <Card
               key={t.id}
-              className="w-[15rem] h-[22rem] m-2 flex-shrink-0 shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cur"
+              className="w-[18rem] h-[30rem] m-2 flex-shrink-0 shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cur"
             >
               <CardContent className=" flex flex-col items-center justify-between h-full cursor-grab active:cursor-grabbing">
                 <div className="flex flex-col items-center">
@@ -65,7 +65,7 @@ const [showLoading, setShowLoading] = useState(true);
                     alt={t.name}
                     width={120}
                     height={120}
-                    className="object-cover w-60 h-50"
+                    className="object-cover w-60 h-70"
                     loading="lazy"
                   />
                   <h3 className="mt-6 font-bold text-center capitalize ">

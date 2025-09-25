@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import Link from "next/link";
 import { getYoutubeEmbedUrl } from "@/utils/youtube";
+import Reveal from "@/components/reveal";
 
 async function fetchPosts({
   pageParam = null,
@@ -57,7 +58,7 @@ export default function PostsPage({
   }, [hasNextPage, fetchNextPage]);
 
   return (
-    <div className="container mx-auto p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="container mx-auto p-6 grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-6">
       {data?.pages.map((page, i) =>
         page.posts.map((post: any) => {
           // cari media pertama
@@ -67,6 +68,8 @@ export default function PostsPage({
           const firstVideo = post.blocks.find((b: any) => b.type === "VIDEO");
 
           return (
+            <Reveal>
+
             <Link
               key={post.id}
               href={`/ppdb-mts-al-aqsha/${post.id}`}
@@ -86,7 +89,7 @@ export default function PostsPage({
                 <CardContent>
                   {/* Style 1 → gambar horizontal */}
                   {post.style === 1 && firstImage && (
-                    <div className="relative w-full h-48 md:h-60">
+                    <div className="relative w-full h-48 md:h-100 mb-4">
                       <Image
                         src={firstImage.image.url}
                         alt={firstImage.image.caption || "Thumbnail"}
@@ -98,7 +101,7 @@ export default function PostsPage({
 
                   {/* Style 2 → gambar panjang */}
                   {post.style === 2 && firstImage && (
-                    <div className="relative w-full h-96">
+                    <div className="relative w-full h-96 mb-4">
                       <Image
                         src={firstImage.image.url}
                         alt={firstImage.image.caption || "Thumbnail"}
@@ -110,9 +113,9 @@ export default function PostsPage({
 
                   {/* Style 3 → video */}
                   {post.style === 3 && firstVideo && (
-                    <div className="aspect-video">
+                    <div className="aspect-video mb-4">
                       <iframe
-                        src={getYoutubeEmbedUrl(firstVideo.content)} // ⬅️
+                        src={getYoutubeEmbedUrl(firstVideo.content)}
                         title="Video"
                         className="w-full h-full rounded-xl"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -121,7 +124,23 @@ export default function PostsPage({
                     </div>
                   )}
 
-                  {/* Fallback kalau tidak ada media */}
+                  {/* Excerpt text */}
+                  {(() => {
+                    const firstText = post.blocks.find(
+                      (b: any) => b.type === "PARAGRAPH" && b.content
+                    );
+                    if (!firstText) return null;
+                    const excerpt =
+                      firstText.content.slice(0, 120) +
+                      (firstText.content.length > 120 ? "..." : "");
+                    return (
+                      <p className="text-gray-700 text-sm leading-relaxed line-clamp-3">
+                        {excerpt}
+                      </p>
+                    );
+                  })()}
+
+                  {/* Fallback kalau tidak ada media sama sekali */}
                   {!firstImage && !firstVideo && (
                     <div className="w-full h-48 flex items-center justify-center bg-gray-200 text-gray-500 rounded-xl">
                       No Media
@@ -130,6 +149,7 @@ export default function PostsPage({
                 </CardContent>
               </Card>
             </Link>
+            </Reveal>
           );
         })
       )}

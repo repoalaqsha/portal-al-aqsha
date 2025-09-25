@@ -11,7 +11,10 @@ import KepsekReveal from "@/components/kepsek-reveal";
 export default function Home() {
   return (
     <div className="w-full mx-auto">
+      <Reveal>
+
       <Berita />
+      </Reveal>
 
       <div className="w-[80%] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 py-10 px-6">
         {/* Kontak Sekolah */}
@@ -82,7 +85,7 @@ export default function Home() {
 
         
         <Reveal>
-          <PostsAside category="BERITA" />
+          <PostsAside category="" />
         </Reveal>
         {/* Berita Populer */}
       </div>
