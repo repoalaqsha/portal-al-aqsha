@@ -60,7 +60,7 @@ function NavigationMenuTrigger({
   ...props
 }: React.ComponentProps<typeof NavigationMenuPrimitive.Trigger>) {
   return (
-    <NavigationMenuPrimitive.Trigger className="group flex items-center gap-1 text-white  transition-colors">
+    <NavigationMenuPrimitive.Trigger className="group flex items-center gap-1 text-white  transition-colors font-medium">
       {children}
       <ChevronDownIcon
         className="ml-1 size-3 transition-transform duration-200 group-data-[state=open]:rotate-180"

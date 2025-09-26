@@ -43,7 +43,7 @@ export default function Navbar() {
 
             {/* Profile */}
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="text-white font-medium hover:text-yellow-300 transition-colors">
+              <NavigationMenuTrigger >
                 Profile
               </NavigationMenuTrigger>
               <NavigationMenuContent className="p-5 flex flex-col gap-3 bg-white shadow-lg rounded-lg min-w-[200px]">
@@ -70,7 +70,7 @@ export default function Navbar() {
 
             {/* Informasi */}
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="text-white font-medium hover:text-yellow-300 transition-colors">
+              <NavigationMenuTrigger >
                 Informasi
               </NavigationMenuTrigger>
               <NavigationMenuContent className="p-5 flex flex-col gap-3 bg-white shadow-lg rounded-lg min-w-[200px]">

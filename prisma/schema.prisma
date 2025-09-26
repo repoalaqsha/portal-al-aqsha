@@ -30,6 +30,7 @@ model Post {
   createdAt DateTime    @default(now())
 
   blocks    PostBlock[]
+  visitors  Visitor[] 
 }
 
 model PostBlock {
@@ -54,7 +55,7 @@ model Image {
 model Teacher {
   id       String @id @default(uuid())
   name     String
-  nip      String @unique
+  nip      String? @unique
   jabatan  String
   pesan    String
   imageUrl String?
@@ -79,6 +80,50 @@ model Sosmed {
   sosmedName String
   sosmedUrl String @default("www.example.com")
 }
+
+model SchoolProfile {
+  id                 String   @id @default(uuid())
+  namaSekolah        String
+  jenisSekolah       String
+  nss                String?
+  npsn               String?
+  tanggalBerdiri     DateTime?
+  akreditasi         String?
+  programJurusan     String?
+  izinOperasional    String?
+  luasTanah          Int?
+  kurikulum          String?
+  jamAktif           Int?
+  jumlahGuruStaff    Int?
+  jumlahSiswa        Int?
+  jumlahRombel       Int?
+  jumlahPrestasi     Int?
+  sloganSekolah      String?
+  kepsek             String?
+  nipKepsek          String?
+  masaKerja          String?
+  izinMemimpin       String?
+  statusKepegawaian  String?
+  pendidikanTerakhir String?
+  deskripsiSekolah   String?
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Visitor {
+  id         String   @id @default(uuid())
+  postId     String
+  visitorId  String   // cookieId / fingerprint / ip hash
+  ipAddress  String?
+  userAgent  String?
+  readAt     DateTime @default(now())
+
+  post       Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, visitorId])
+}
+
 
 enum Category {
   BERITA

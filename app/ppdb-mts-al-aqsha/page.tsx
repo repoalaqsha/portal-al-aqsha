@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getYoutubeEmbedUrl } from "@/utils/youtube";
 import Reveal from "@/components/reveal";
+import VisitorCount from "@/components/visitor-count";
 
 async function fetchPosts({
   pageParam = null,
@@ -69,86 +70,87 @@ export default function PostsPage({
 
           return (
             <Reveal>
+              <Link
+                key={post.id}
+                href={`/ppdb-mts-al-aqsha/${post.id}`}
+                className="group"
+              >
+                <Card className="rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden cursor-pointer">
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between group-hover:text-blue-600 transition">
+                      {post.title}
+                      <Badge>{post.category}</Badge>
+                    </CardTitle>
 
-            <Link
-              key={post.id}
-              href={`/ppdb-mts-al-aqsha/${post.id}`}
-              className="group"
-            >
-              <Card className="rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between group-hover:text-blue-600 transition">
-                    {post.title}
-                    <Badge>{post.category}</Badge>
-                  </CardTitle>
-                  <p className="text-sm text-gray-500">
-                    Oleh {post.author} •{" "}
-                    {new Date(post.createdAt).toLocaleDateString("id-ID")}
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  {/* Style 1 → gambar horizontal */}
-                  {post.style === 1 && firstImage && (
-                    <div className="relative w-full h-48 md:h-100 mb-4">
-                      <Image
-                        src={firstImage.image.url}
-                        alt={firstImage.image.caption || "Thumbnail"}
-                        fill
-                        className="object-cover rounded-xl"
-                      />
-                    </div>
-                  )}
+                    <p className="text-sm text-gray-500">
+                      Oleh {post.author} •{" "}
+                      {new Date(post.createdAt).toLocaleDateString("id-ID")}
+                    </p>
+                    <VisitorCount postId={post.id} />
+                  </CardHeader>
+                  <CardContent>
+                    {/* Style 1 → gambar horizontal */}
+                    {post.style === 1 && firstImage && (
+                      <div className="relative w-full h-48 md:h-100 mb-4">
+                        <Image
+                          src={firstImage.image.url}
+                          alt={firstImage.image.caption || "Thumbnail"}
+                          fill
+                          className="object-cover rounded-xl"
+                        />
+                      </div>
+                    )}
 
-                  {/* Style 2 → gambar panjang */}
-                  {post.style === 2 && firstImage && (
-                    <div className="relative w-full h-96 mb-4">
-                      <Image
-                        src={firstImage.image.url}
-                        alt={firstImage.image.caption || "Thumbnail"}
-                        fill
-                        className="object-cover rounded-xl"
-                      />
-                    </div>
-                  )}
+                    {/* Style 2 → gambar panjang */}
+                    {post.style === 2 && firstImage && (
+                      <div className="relative w-full h-96 mb-4">
+                        <Image
+                          src={firstImage.image.url}
+                          alt={firstImage.image.caption || "Thumbnail"}
+                          fill
+                          className="object-cover rounded-xl"
+                        />
+                      </div>
+                    )}
 
-                  {/* Style 3 → video */}
-                  {post.style === 3 && firstVideo && (
-                    <div className="aspect-video mb-4">
-                      <iframe
-                        src={getYoutubeEmbedUrl(firstVideo.content)}
-                        title="Video"
-                        className="w-full h-full rounded-xl"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
-                    </div>
-                  )}
+                    {/* Style 3 → video */}
+                    {post.style === 3 && firstVideo && (
+                      <div className="aspect-video mb-4">
+                        <iframe
+                          src={getYoutubeEmbedUrl(firstVideo.content)}
+                          title="Video"
+                          className="w-full h-full rounded-xl"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      </div>
+                    )}
 
-                  {/* Excerpt text */}
-                  {(() => {
-                    const firstText = post.blocks.find(
-                      (b: any) => b.type === "PARAGRAPH" && b.content
-                    );
-                    if (!firstText) return null;
-                    const excerpt =
-                      firstText.content.slice(0, 120) +
-                      (firstText.content.length > 120 ? "..." : "");
-                    return (
-                      <p className="text-gray-700 text-sm leading-relaxed line-clamp-3">
-                        {excerpt}
-                      </p>
-                    );
-                  })()}
+                    {/* Excerpt text */}
+                    {(() => {
+                      const firstText = post.blocks.find(
+                        (b: any) => b.type === "PARAGRAPH" && b.content
+                      );
+                      if (!firstText) return null;
+                      const excerpt =
+                        firstText.content.slice(0, 120) +
+                        (firstText.content.length > 120 ? "..." : "");
+                      return (
+                        <p className="text-gray-700 text-sm leading-relaxed line-clamp-3">
+                          {excerpt}
+                        </p>
+                      );
+                    })()}
 
-                  {/* Fallback kalau tidak ada media sama sekali */}
-                  {!firstImage && !firstVideo && (
-                    <div className="w-full h-48 flex items-center justify-center bg-gray-200 text-gray-500 rounded-xl">
-                      No Media
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </Link>
+                    {/* Fallback kalau tidak ada media sama sekali */}
+                    {!firstImage && !firstVideo && (
+                      <div className="w-full h-48 flex items-center justify-center bg-gray-200 text-gray-500 rounded-xl">
+                        No Media
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </Link>
             </Reveal>
           );
         })

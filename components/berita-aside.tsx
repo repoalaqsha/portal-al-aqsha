@@ -44,9 +44,8 @@ export default function PostsAside({
           const firstVideo = post.blocks.find((b: any) => b.type === "VIDEO");
 
           return (
-            <Reveal>
+            <Reveal key={post.id}>
               <Link
-                key={post.id}
                 href={`/berita/${post.id}`}
                 className="flex  gap-3 group"
               >

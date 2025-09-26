@@ -6,7 +6,7 @@ import { useTeachers, useDeleteTeacher } from "@/hooks/useTeachers";
 import Image from "next/image";
 import { Plus, Pencil, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
-
+import logo from "../app/logo.png";
 import useEmblaCarousel from "embla-carousel-react";
 import TeacherFormModal from "@/components/teacher-form-modal";
 import { useAuth } from "@/hooks/useAuth";
@@ -61,7 +61,7 @@ const [showLoading, setShowLoading] = useState(true);
               <CardContent className=" flex flex-col items-center justify-between h-full cursor-grab active:cursor-grabbing">
                 <div className="flex flex-col items-center">
                   <Image
-                    src={t.imageUrl}
+                    src={t.imageUrl || logo}
                     alt={t.name}
                     width={120}
                     height={120}

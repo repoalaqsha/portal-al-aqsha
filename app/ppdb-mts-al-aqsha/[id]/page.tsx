@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import PostForm from "@/components/PostForm";
 import Loading from "@/app/loading";
+import PostVisitorTracker from "@/components/post-visitors";
+import VisitorCount from "@/components/visitor-count";
 
 export default function EditPostPage() {
   const { data: user, isLoading: authLoading } = useAuth();
@@ -45,12 +47,16 @@ export default function EditPostPage() {
   }
 
   return (
-    <PostForm
-      mode="edit"
-      initialData={post}
-      onSubmit={(formData) => mutation.mutateAsync(formData)}
-      isPending={mutation.isPending}
-      user={user}
-    />
+    <div>
+      <PostVisitorTracker postId={id} />
+      <VisitorCount postId={ id} />
+      <PostForm
+        mode="edit"
+        initialData={post}
+        onSubmit={(formData) => mutation.mutateAsync(formData)}
+        isPending={mutation.isPending}
+        user={user}
+      />
+    </div>
   );
 }

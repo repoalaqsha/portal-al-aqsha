@@ -144,6 +144,7 @@ export default function PostForm({
         <p className="text-gray-500">
           By {author} • {category}
         </p>
+        
 
         {blocks.map((block) =>
           block.type === "PARAGRAPH" ? (

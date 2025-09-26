@@ -10,7 +10,7 @@ async function main() {
   const admin = await prisma.user.create({
     data: {
       username: "admin",
-      email: "repomtssalaqsha@gmail.com",
+      email: "mtssalaqsha@gmail.com",
       password: hashedPassword,
     },
   });
@@ -26,9 +26,10 @@ async function main() {
   // Contact default
   await prisma.contact.create({
     data: {
-      email: "info@sekolah.sch.id",
-      address: "Jl. Pendidikan No. 123, Jakarta",
-      phone: "081234567890",
+      email: "mtssalaqsha@gmail.com",
+      address:
+        "Jl. Sutra Ungu No.31, RT.13/RW.10, Klp. Gading Tim., Kec. Klp. Gading, Jkt Utara",
+      phone: "0214505722",
     },
   });
 
@@ -41,19 +42,49 @@ async function main() {
     ],
   });
 
+  await prisma.schoolProfile.create({
+    data: {
+      namaSekolah: "MTSS AL-AQSHA",
+      jenisSekolah: "SWASTA",
+      nss: "",
+      npsn: "",
+      tanggalBerdiri: new Date("2000-01-01"), 
+      akreditasi: "c",
+      programJurusan: null,
+      izinOperasional: null,
+      luasTanah: null,
+      kurikulum: "KURIKULUM ",
+      jamAktif: 7,
+      jumlahGuruStaff: null,
+      jumlahSiswa: null,
+      jumlahRombel: 12,
+      jumlahPrestasi: 0,
+      sloganSekolah: null,
+      kepsek: "Kepsek Al-Aqsha",
+      nipKepsek: "null",
+      masaKerja: null,
+      izinMemimpin: null,
+      statusKepegawaian: "null",
+      pendidikanTerakhir: "S1",
+      deskripsiSekolah:
+        "Sekolah MTSS Al-Aqsha",
+    },
+  });
   // Guru contoh
   await prisma.teacher.createMany({
     data: [
       {
-        name: "Bapak Ahmad",
+        name: "null",
+        nip: "0000000001",
         jabatan: "Kepala Sekolah",
-        imageUrl: "/images/ahmad.jpg",
+        imageUrl: "",
         pesan: "",
       },
       {
-        name: "Ibu Siti",
+        name: "",
+        nip: "0000000002",
         jabatan: "Wakil Kepala Sekolah",
-        imageUrl: "/images/siti.jpg",
+        imageUrl: "",
         pesan: "",
       },
     ],

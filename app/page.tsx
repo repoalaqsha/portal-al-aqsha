@@ -20,11 +20,13 @@ export default function Home() {
         {/* Kontak Sekolah */}
         <Reveal>
           <aside className=" bg-gray-100 shadow-md rounded-xl p-6 border-gray-200 border flex flex-col gap-4">
+            
+
             <h2 className="text-xl font-bold border-b border-gray-300 pb-2">
               Kontak
             </h2>
-
-            <div className="space-y-3 text-sm">
+            <Reveal>
+              <div className="space-y-3 text-sm ">
               <div>
                 <p className="font-semibold flex items-center gap-2">
                   <IoLocationOutline /> Alamat:
@@ -56,14 +58,20 @@ export default function Home() {
                 </div>
               </div>
             </div>
+            </Reveal>
+            
+            
           </aside>
         </Reveal>
         
         <KepsekReveal>
           <main className="w-full ">
-          <h1 className="text-3xl font-bold text-teal-600 mb-4">
+            <Reveal>
+                <h1 className="text-3xl font-bold text-teal-600 mb-4">
             Sambutan Kepala Sekolah
           </h1>
+            </Reveal>
+        
 
           <div className="flex flex-col md:flex-row items-start gap-6">
             <img
@@ -85,7 +93,7 @@ export default function Home() {
 
         
         <Reveal>
-          <PostsAside category="" />
+          <PostsAside  />
         </Reveal>
         {/* Berita Populer */}
       </div>

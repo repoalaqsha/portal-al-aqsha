@@ -30,31 +30,32 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen flex flex-col ">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen flex flex-col`}
+      >
         <Providers>
           {/* Header */}
-              <div className="flex items-center gap-4 ml-20">
-                <div className="relative group">
-                  <Image
-                    src={logo}
-                    alt="Logo"
-                    width={70}
-                    className="transition-transform duration-300 group-hover:scale-110 drop-shadow-lg"
-                  />
-                  <span className="absolute inset-0 rounded-full border-2 border-green-500 animate-ping opacity-30"></span>
-                </div>
-                <div>
-                  <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-teal-700/90 to-cyan-600/90 bg-clip-text text-transparent drop-shadow-md">
-                    MTSS Al-Aqsha
-                  </h1>
-                  <p className="text-lg md:text-2xl text-gray-600 tracking-wide">
-                    Kelapa Gading Timur
-                  </p>
-                </div>
-          
-              </div>
+          <div className="flex items-center gap-4 ml-20">
+            <div className="relative group">
+              <Image
+                src={logo}
+                alt="Logo"
+                width={70}
+                className="transition-transform duration-300 group-hover:scale-110 drop-shadow-lg"
+              />
+              <span className="absolute inset-0 rounded-full border-2 border-green-500 animate-ping opacity-30"></span>
+            </div>
+            <div>
+              <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-teal-700/90 to-cyan-600/90 bg-clip-text text-transparent drop-shadow-md">
+                MTSS Al-Aqsha
+              </h1>
+              <p className="text-lg md:text-2xl text-gray-600 tracking-wide">
+                Kelapa Gading Timur
+              </p>
+            </div>
+          </div>
           <header className="w-full bg-white shadow-md sticky top-0 z-30">
-              <Navbar />
+            <Navbar />
             <MarqueeText />
           </header>
 
