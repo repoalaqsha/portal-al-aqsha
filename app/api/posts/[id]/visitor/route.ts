@@ -53,19 +53,15 @@ export async function POST(
   }
 }
 
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: Request) {
   try {
-    const { id: postId } = params;
+    const { pathname } = new URL(req.url);
+    const postId = pathname.split("/").slice(-2, -1)[0]; // ambil [id] sebelum "visitor"
 
-    // hitung jumlah visitor unik
     const count = await prisma.visitor.count({
       where: { postId },
     });
 
-    // kalau mau detail visitor juga bisa
     const visitors = await prisma.visitor.findMany({
       where: { postId },
       select: {
