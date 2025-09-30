@@ -7,6 +7,7 @@ import { PostFormValues } from "@/types/backend";
 import { Category } from "@/types/SchoolTypes";
 import { NextResponse } from "next/server";
 import type { UploadApiResponse } from "cloudinary";
+import { Prisma } from "@prisma/client";
 
 export async function GET(req: Request) {
   try {
@@ -90,19 +91,6 @@ async function parseFormData(req: Request): Promise<PostFormValues> {
   };
 }
 
-type PostBlockWithImageInput = {
-  type: "PARAGRAPH" | "VIDEO" | "IMAGE";
-  order: number;
-  content?: string;
-  image?: {
-    create: {
-      url: string;
-      publicId: string | undefined | null;
-      caption?: string;
-    };
-  };
-};
-
 export async function PUT(
   req: Request,
   context: { params: Promise<{ id: string }> }
@@ -124,14 +112,13 @@ export async function PUT(
     });
 
     let fileIndex = 0;
-    const createBlocks: PostBlockWithImageInput[] = [];
-
+    const createBlocks: Prisma.PostBlockCreateWithoutPostInput[] = [];
     const updateBlocks: Promise<unknown>[] = [];
     const keepBlockIds: string[] = [];
 
     for (const [i, block] of blocks.entries()) {
       const existingBlock = block.id
-        ? oldBlocks.find((b) => b.id === block.id)
+        ? oldBlocks.find((b:any) => b.id === block.id)
         : null;
 
       if (block.type === "PARAGRAPH" && block.content) {
@@ -246,7 +233,7 @@ export async function PUT(
     }
 
     // 🔥 hapus block lama yang tidak dipakai lagi
-    const deleteBlocks = oldBlocks.filter((b) => !keepBlockIds.includes(b.id));
+    const deleteBlocks = oldBlocks.filter((b:any) => !keepBlockIds.includes(b.id));
     for (const b of deleteBlocks) {
       if (b.image?.publicId) {
         await cloudinary.uploader.destroy(b.image.publicId);

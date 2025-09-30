@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["res.cloudinary.com"], // izinkan Cloudinary
+    domains: ["res.cloudinary.com"], 
   },
 };
 
