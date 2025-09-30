@@ -15,14 +15,11 @@ import {
 } from "@/components/ui/navigation-menu";
 import BtnLogout from "./btn-logout";
 import { useAuth } from "@/hooks/useAuth";
-import Loading from "@/app/loading";
 
 export default function Navbar() {
-  const { data: user, isLoading, isError } = useAuth();
+  const { data: user} = useAuth();
 
-  if (isLoading) {
-    return <Loading />;
-  }
+
 
   return (
     <header className="w-full sticky top-0 z-50 bg-gradient-to-r from-teal-700/90 to-cyan-600/90 backdrop-blur-md border-b border-white/20 shadow-lg px-6 md:px-10">
@@ -74,10 +71,10 @@ export default function Navbar() {
                 Informasi
               </NavigationMenuTrigger>
               <NavigationMenuContent className="p-5 flex flex-col gap-3 bg-white shadow-lg rounded-lg min-w-[200px]">
-                <Link href="/informasi" className="hover:text-teal-600">
+                <Link href="/prestasi" className="hover:text-teal-600">
                   Prestasi
                 </Link>
-                <Link href="/informasi" className="hover:text-teal-600">
+                <Link href="/berita" className="hover:text-teal-600">
                   Berita
                 </Link>
                 <Link href="/informasi" className="hover:text-teal-600">

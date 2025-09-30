@@ -68,6 +68,7 @@ export interface Teacher {
   imageUrl?: string | null;
   publicId?: string | null;
 }
+export type TeacherFormValues = Omit<Teacher, "id" | "createdAt" | "updatedAt">;
 
 // ---------------------
 export interface VisiMisi {

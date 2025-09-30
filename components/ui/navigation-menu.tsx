@@ -54,13 +54,9 @@ function NavigationMenuItem({
 }
 
 // Trigger (polos)
-function NavigationMenuTrigger({
-  className,
-  children,
-  ...props
-}: React.ComponentProps<typeof NavigationMenuPrimitive.Trigger>) {
+function NavigationMenuTrigger({ children }: { children: React.ReactNode }) {
   return (
-    <NavigationMenuPrimitive.Trigger className="group flex items-center gap-1 text-white  transition-colors font-medium">
+    <NavigationMenuPrimitive.Trigger className="group flex items-center gap-1 text-white transition-colors font-medium">
       {children}
       <ChevronDownIcon
         className="ml-1 size-3 transition-transform duration-200 group-data-[state=open]:rotate-180"
@@ -69,6 +65,7 @@ function NavigationMenuTrigger({
     </NavigationMenuPrimitive.Trigger>
   );
 }
+
 
 // Content (dropdown polos)
 function NavigationMenuContent({

@@ -29,7 +29,7 @@ async function fetchPosts({
 }
 
 export default function PostsPage({
-  category = "PPDB",
+  category = "PRESTASI",
 }: {
   category?: string;
 }) {
@@ -71,12 +71,8 @@ export default function PostsPage({
           );
 
           return (
-            <Reveal>
-              <Link
-                key={post.id}
-                href={`/ppdb-mts-al-aqsha/${post.id}`}
-                className="group"
-              >
+            <Reveal key={post.id}>
+              <Link href={`/prestasi/${post.id}`} className="group">
                 <Card className="rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden cursor-pointer">
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between group-hover:text-blue-600 transition">

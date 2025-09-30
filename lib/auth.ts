@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import { NextResponse } from "next/server";
 
 export function requireAuth(req: Request) {
   const cookieHeader = req.headers.get("cookie");

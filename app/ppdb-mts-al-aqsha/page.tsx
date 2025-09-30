@@ -69,12 +69,8 @@ export default function PostsPage({
           const firstVideo = post.blocks.find((b: PostBlock) => b.type === "VIDEO");
 
           return (
-            <Reveal>
-              <Link
-                key={post.id}
-                href={`/ppdb-mts-al-aqsha/${post.id}`}
-                className="group"
-              >
+            <Reveal key={post.id}>
+              <Link href={`/ppdb-mts-al-aqsha/${post.id}`} className="group">
                 <Card className="rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden cursor-pointer">
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between group-hover:text-blue-600 transition">
@@ -89,7 +85,6 @@ export default function PostsPage({
                     <VisitorCount postId={post.id} />
                   </CardHeader>
                   <CardContent>
-                    
                     {post.style === 1 && firstImage && (
                       <div className="relative w-full h-48 md:h-100 mb-4">
                         <Image
@@ -101,7 +96,6 @@ export default function PostsPage({
                       </div>
                     )}
 
-                   
                     {post.style === 2 && firstImage && (
                       <div className="relative w-full h-96 mb-4">
                         <Image
@@ -132,7 +126,9 @@ export default function PostsPage({
                       if (!firstText) return null;
                       const excerpt =
                         firstText?.content?.slice(0, 120) +
-                        (firstText?.content && firstText.content.length > 120 ? "..." : "");
+                        (firstText?.content && firstText.content.length > 120
+                          ? "..."
+                          : "");
                       return (
                         <p className="text-gray-700 text-sm leading-relaxed line-clamp-3">
                           {excerpt}
@@ -140,7 +136,6 @@ export default function PostsPage({
                       );
                     })()}
 
-                   
                     {!firstImage && !firstVideo && (
                       <div className="w-full h-48 flex items-center justify-center bg-gray-200 text-gray-500 rounded-xl">
                         No Media

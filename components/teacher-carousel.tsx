@@ -11,6 +11,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import TeacherFormModal from "@/components/teacher-form-modal";
 import { useAuth } from "@/hooks/useAuth";
 import LoadingText from "@/app/loading";
+import { Teacher } from "@/types/SchoolTypes";
 
 
 export default function TeacherCarousel() {
@@ -25,7 +26,7 @@ const [showLoading, setShowLoading] = useState(true);
 
  useEffect(() => {
    if (!isLoading) {
-     // walaupun data udah ready, tetap tampilkan loading minimal 3 detik
+     
      const timer = setTimeout(() => setShowLoading(false), 3000);
      return () => clearTimeout(timer);
    }
@@ -53,7 +54,7 @@ const [showLoading, setShowLoading] = useState(true);
 
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
-          {teachers?.map((t: any) => (
+          {teachers?.map((t: Teacher) => (
             <Card
               key={t.id}
               className="w-[18rem] h-[30rem] m-2 flex-shrink-0 shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300 cur"

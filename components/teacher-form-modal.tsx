@@ -8,11 +8,23 @@ import {
 } from "@/components/ui/dialog";
 import { useCreateTeacher, useUpdateTeacher } from "@/hooks/useTeachers";
 import TeacherForm from "./teacher-edit";
+import { Teacher, TeacherFormValues } from "@/types/SchoolTypes";
 
-export default function TeacherFormModal({ open, onClose, teacher }: any) {
+interface TeacherFormModalProps {
+  open: boolean;
+  onClose: () => void;
+  teacher?: Teacher | null;
+  onSubmit?: (formData: TeacherFormValues) => void;
+}
+
+export default function TeacherFormModal({
+  open,
+  onClose,
+  teacher, onSubmit
+}: TeacherFormModalProps) {
   const { mutate: createTeacher, isPending: creating } = useCreateTeacher();
   const { mutate: updateTeacher, isPending: updating } = useUpdateTeacher(
-    teacher?.id
+    teacher?.id ?? ""
   );
 
   return (
@@ -24,7 +36,7 @@ export default function TeacherFormModal({ open, onClose, teacher }: any) {
         <TeacherForm
           initialData={teacher}
           isPending={creating || updating}
-          onSubmit={(formData:any) => {
+          onSubmit={(formData: FormData) => {
             if (teacher) {
               updateTeacher(formData, { onSuccess: onClose });
             } else {
