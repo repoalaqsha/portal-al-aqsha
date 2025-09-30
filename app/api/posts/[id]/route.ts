@@ -7,7 +7,7 @@ import { PostFormValues } from "@/types/backend";
 import { Category } from "@/types/SchoolTypes";
 import { NextResponse } from "next/server";
 import type { UploadApiResponse } from "cloudinary";
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 
 export async function GET(req: Request) {
   try {
