@@ -1,10 +1,11 @@
 "use client";
 
 import LoadingText from "@/app/loading";
+import { SchoolProfile } from "@/types/SchoolTypes";
 import { useEffect, useState } from "react";
 
 export default function SchoolProfilePage() {
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<SchoolProfile|null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -38,7 +39,8 @@ export default function SchoolProfilePage() {
     return <p className="text-center py-10">Profil sekolah tidak ditemukan.</p>;
 
   // 🔧 Input builder
-  const renderRow = (label: string, field: string, type: string = "text") => (
+  type SchoolProfileField = keyof SchoolProfile;
+  const renderRow = (label: string, field: SchoolProfileField, type: string = "text") => (
     <tr className="border-b">
       <td className="p-2 font-medium text-gray-700 w-1/3">{label}</td>
       <td className="p-2 w-2/3">

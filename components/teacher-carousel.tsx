@@ -19,7 +19,7 @@ export default function TeacherCarousel() {
   const { mutate: deleteTeacher, isPending: deleting } = useDeleteTeacher();
 const [showLoading, setShowLoading] = useState(true);
   const [open, setOpen] = useState(false);
-  const [selectedTeacher, setSelectedTeacher] = useState<any>(null);
+  const [selectedTeacher, setSelectedTeacher] = useState<Teacher|null>(null);
   const { data: user } = useAuth();
 
   const [emblaRef] = useEmblaCarousel({ loop: true });

@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Menu } from "lucide-react";
+import { Menu, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { DialogTitle } from "@radix-ui/react-dialog";
+import { motion, AnimatePresence } from "framer-motion";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -15,10 +15,12 @@ import {
 } from "@/components/ui/navigation-menu";
 import BtnLogout from "./btn-logout";
 import { useAuth } from "@/hooks/useAuth";
+import { useState } from "react";
 
 export default function Navbar() {
   const { data: user} = useAuth();
-
+const [openProfile, setOpenProfile] = useState(false);
+const [openInfo, setOpenInfo] = useState(false);
 
 
   return (
@@ -40,9 +42,7 @@ export default function Navbar() {
 
             {/* Profile */}
             <NavigationMenuItem>
-              <NavigationMenuTrigger >
-                Profile
-              </NavigationMenuTrigger>
+              <NavigationMenuTrigger>Profile</NavigationMenuTrigger>
               <NavigationMenuContent className="p-5 flex flex-col gap-3 bg-white shadow-lg rounded-lg min-w-[200px]">
                 <Link href="/profile" className="hover:text-teal-600">
                   Profile Sekolah
@@ -67,9 +67,7 @@ export default function Navbar() {
 
             {/* Informasi */}
             <NavigationMenuItem>
-              <NavigationMenuTrigger >
-                Informasi
-              </NavigationMenuTrigger>
+              <NavigationMenuTrigger>Informasi</NavigationMenuTrigger>
               <NavigationMenuContent className="p-5 flex flex-col gap-3 bg-white shadow-lg rounded-lg min-w-[200px]">
                 <Link href="/prestasi" className="hover:text-teal-600">
                   Prestasi
@@ -106,7 +104,117 @@ export default function Navbar() {
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
+        {/* Mobile Menu */}
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden text-white"
+            >
+              <Menu className="h-6 w-6" />
+            </Button>
+          </SheetTrigger>
 
+          <SheetContent
+            side="left"
+            className="p-6 h-screen overflow-y-auto bg-white"
+          >
+            <nav className="flex flex-col gap-4 text-lg font-medium">
+              <SheetTitle hidden />
+
+              {/* Home */}
+              <Link href="/" className="hover:text-teal-600">
+                Home
+              </Link>
+
+              {/* Profile */}
+              <button
+                onClick={() => setOpenProfile(!openProfile)}
+                className="flex items-center justify-between hover:text-teal-600"
+              >
+                <span className="font-semibold">Profile</span>
+                <ChevronDown
+                  className={`h-4 w-4 transition-transform ${
+                    openProfile ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              <AnimatePresence>
+                {openProfile && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex flex-col gap-2 pl-4 overflow-hidden"
+                  >
+                    <Link href="/profile" className="hover:text-teal-600">
+                      Profile Sekolah
+                    </Link>
+                    <Link href="/profile" className="hover:text-teal-600">
+                      Visi & Misi
+                    </Link>
+                    <Link href="/profile" className="hover:text-teal-600">
+                      Siswa
+                    </Link>
+                    <Link href="/profile" className="hover:text-teal-600">
+                      Kepala Sekolah
+                    </Link>
+                    <Link href="/teacher" className="hover:text-teal-600">
+                      Guru
+                    </Link>
+                    <Link href="/profile" className="hover:text-teal-600">
+                      Extrakulikuler
+                    </Link>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Informasi */}
+              <button
+                onClick={() => setOpenInfo(!openInfo)}
+                className="flex items-center justify-between hover:text-teal-600"
+              >
+                <span className="font-semibold">Informasi</span>
+                <ChevronDown
+                  className={`h-4 w-4 transition-transform ${
+                    openInfo ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              <AnimatePresence>
+                {openInfo && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex flex-col gap-2 pl-4 overflow-hidden"
+                  >
+                    <Link href="/prestasi" className="hover:text-teal-600">
+                      Prestasi
+                    </Link>
+                    <Link href="/berita" className="hover:text-teal-600">
+                      Berita
+                    </Link>
+                    <Link href="/informasi" className="hover:text-teal-600">
+                      Informasi
+                    </Link>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Lainnya */}
+              <Link href="/galeri" className="hover:text-teal-600">
+                Galeri
+              </Link>
+              <Link href="/ppdb-mts-al-aqsha" className="hover:text-teal-600">
+                PPDB MTS
+              </Link>
+            </nav>
+          </SheetContent>
+        </Sheet>
         {/* Auth Button */}
         <div className="flex items-center gap-3">
           {user && <BtnLogout />}

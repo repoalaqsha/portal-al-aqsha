@@ -4,9 +4,10 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { Teacher } from "@/types/SchoolTypes";
 
 type TeacherFormProps = {
-  initialData?: any;
+  initialData?: Teacher | null;
   onSubmit: (formData: FormData) => void;
   isPending?: boolean;
 };

@@ -20,7 +20,7 @@ interface TeacherFormModalProps {
 export default function TeacherFormModal({
   open,
   onClose,
-  teacher, onSubmit
+  teacher
 }: TeacherFormModalProps) {
   const { mutate: createTeacher, isPending: creating } = useCreateTeacher();
   const { mutate: updateTeacher, isPending: updating } = useUpdateTeacher(

@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { getYoutubeEmbedUrl } from "@/utils/youtube";
-import Loading from "@/app/loading";
 import Reveal from "./reveal";
 import { Post, PostBlock } from "@/types/SchoolTypes";
 
