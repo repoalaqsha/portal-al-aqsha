@@ -7,7 +7,7 @@ import { PostFormValues } from "@/types/backend";
 import { Category } from "@/types/SchoolTypes";
 import { NextResponse } from "next/server";
 import type { UploadApiResponse } from "cloudinary";
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 
 export async function GET(req: Request) {
   try {
@@ -72,10 +72,7 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ message: "✅ Post deleted", success: true });
   } catch (error) {
     console.error("❌ Delete post error:", error);
-    return NextResponse.json(
-      { error: "Failed to delete post" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to delete post" }, { status: 500 });
   }
 }
 
@@ -262,8 +259,8 @@ export async function PUT(
     });
 
     return NextResponse.json({ message: "Post updated", post: updated });
-  } catch (error) {
-    console.error("Update error:", error);
+  } catch {
+   
     return NextResponse.json(
       { error: "Failed to update post" },
       { status: 500 }
