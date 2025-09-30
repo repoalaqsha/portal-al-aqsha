@@ -29,14 +29,16 @@ export async function GET(
 }
 
 // UPDATE teacher
-export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: Request) {
   try {
-     const user = requireAuth(req);
-      if (!user)
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const url = new URL(req.url);
+    const segments = url.pathname.split("/");
+    const id = segments[segments.length - 1];
+
+    const user = requireAuth(req);
+    if (!user)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     const formData = await req.formData();
     const nip = formData.get("nip") as string | null;
     const name = formData.get("name") as string | null;
@@ -45,10 +47,7 @@ export async function PUT(
     const pesan = formData.get("pesan") as string | null;
     const file = formData.get("image") as File | null;
 
-    const teacher = await prisma.teacher.findUnique({
-      where: { id: params.id },
-    });
-
+    const teacher = await prisma.teacher.findUnique({ where: { id } });
     if (!teacher) {
       return NextResponse.json({ error: "Teacher not found" }, { status: 404 });
     }
@@ -56,12 +55,8 @@ export async function PUT(
     let imageUrl = teacher.imageUrl;
     let publicId = teacher.publicId;
 
-    // kalau ada file baru, upload ke Cloudinary
     if (file) {
-      // hapus dulu file lama dari cloudinary
-      if (publicId) {
-        await cloudinary.uploader.destroy(publicId);
-      }
+      if (publicId) await cloudinary.uploader.destroy(publicId);
 
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
@@ -71,9 +66,8 @@ export async function PUT(
         public_id: string;
       }>((resolve, reject) => {
         cloudinary.uploader
-          .upload_stream({ folder: "teachers" }, (error, result) => {
-            if (error || !result)
-              return reject(error || new Error("No result from Cloudinary"));
+          .upload_stream({ folder: "teachers" }, (err, result) => {
+            if (err || !result) return reject(err || new Error("No result"));
             resolve({
               secure_url: result.secure_url,
               public_id: result.public_id,
@@ -87,7 +81,7 @@ export async function PUT(
     }
 
     const updated = await prisma.teacher.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         nip: nip ?? teacher.nip,
         name: name ?? teacher.name,
@@ -99,47 +93,43 @@ export async function PUT(
     });
 
     return NextResponse.json(updated);
-  } catch (error) {
-    console.error("Update teacher error:", error);
- if (
-   typeof error === "object" &&
-   error !== null &&
-   "code" in error &&
-   error.code === "P2002"
- ) {
-   return NextResponse.json({ error: "NIP already exists" }, { status: 409 });
- }
-
- return NextResponse.json(
-   { error: "Failed to update teacher" },
-   { status: 500 }
- );
+  } catch (error: any) {
+    if (error?.code === "P2002") {
+      return NextResponse.json(
+        { error: "NIP already exists" },
+        { status: 409 }
+      );
+    }
+    return NextResponse.json(
+      { error: "Failed to update teacher" },
+      { status: 500 }
+    );
   }
 }
 
-// DELETE teacher
-export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const teacher = await prisma.teacher.findUnique({
-      where: { id: params.id },
-    });
 
+// DELETE teacher
+export async function DELETE(req: Request) {
+  try {
+    const url = new URL(req.url);
+    const segments = url.pathname.split("/");
+    const id = segments[segments.length - 1];
+
+    const teacher = await prisma.teacher.findUnique({ where: { id } });
     if (!teacher) {
       return NextResponse.json({ error: "Teacher not found" }, { status: 404 });
     }
 
-    // hapus foto dari cloudinary kalau ada
+    // Hapus foto di Cloudinary kalau ada
     if (teacher.publicId) {
       await cloudinary.uploader.destroy(teacher.publicId);
     }
 
-    await prisma.teacher.delete({ where: { id: params.id } });
+    await prisma.teacher.delete({ where: { id } });
 
     return NextResponse.json({ message: "Teacher deleted" });
-  } catch  {
+  } catch (error) {
+    console.error("Delete teacher error:", error);
     return NextResponse.json(
       { error: "Failed to delete teacher" },
       { status: 500 }
