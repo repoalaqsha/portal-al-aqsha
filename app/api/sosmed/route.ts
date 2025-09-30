@@ -5,7 +5,7 @@ export async function GET() {
   try {
     const sosmeds = await prisma.sosmed.findMany();
     return NextResponse.json(sosmeds);
-  } catch (error) {
+  } catch  {
     return NextResponse.json(
       { error: "Failed to fetch sosmeds" },
       { status: 500 }

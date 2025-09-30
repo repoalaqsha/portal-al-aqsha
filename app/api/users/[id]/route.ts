@@ -22,11 +22,10 @@ export async function PATCH(
     });
 
     // pakai _password biar linter tau kita sengaja buang
-    const { password: _password, ...safeUser } = user;
+    const { password, ...safeUser } = user;
 
     return NextResponse.json(safeUser);
-  } catch (_error) {
-    console.error("Update user error:", _error);
+  } catch {
     return NextResponse.json(
       { error: "Failed to update user" },
       { status: 500 }

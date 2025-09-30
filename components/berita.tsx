@@ -6,6 +6,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
+import { Post, PostBlock } from "@/types/SchoolTypes";
 
 // 🔹 fetch posts
 async function fetchPosts({
@@ -41,9 +42,9 @@ export default function Berita({ category = "BERITA" }: { category?: string }) {
   return (
     <div className="overflow-hidden relative" ref={emblaRef}>
       <div className="flex">
-        {posts.map((post: any) => {
+        {posts.map((post: Post) => {
           const firstImage = post.blocks.find(
-            (b: any) => b.type === "IMAGE" && b.image
+            (b: PostBlock) => b.type === "IMAGE" && b.image
           );
           const bgImage = firstImage?.image?.url;
 
@@ -99,7 +100,7 @@ export default function Berita({ category = "BERITA" }: { category?: string }) {
 
       {/* Indicator dummy */}
       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
-        {posts.map((_: any, i: number) => (
+        {posts.map((_: Post, i: number) => (
           <span
             key={i}
             className="w-3 h-3 rounded-full bg-white/50 hover:bg-white transition cursor-pointer"

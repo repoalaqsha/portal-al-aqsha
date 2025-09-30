@@ -138,8 +138,7 @@ export async function DELETE(
     await prisma.teacher.delete({ where: { id: params.id } });
 
     return NextResponse.json({ message: "Teacher deleted" });
-  } catch (error) {
-    console.error("Delete teacher error:", error);
+  } catch  {
     return NextResponse.json(
       { error: "Failed to delete teacher" },
       { status: 500 }
