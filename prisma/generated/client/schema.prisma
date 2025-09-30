@@ -1,0 +1,140 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  email     String?  @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model Post {
+  id        String   @id @default(uuid())
+  title     String
+  style     Int
+  category  Category
+  author    String   @default("Hamba_Allah")
+  createdAt DateTime @default(now())
+
+  blocks   PostBlock[]
+  visitors Visitor[]
+}
+
+model PostBlock {
+  id      String    @id @default(uuid())
+  type    BlockType
+  content String?
+  order   Int
+  postId  String
+  post    Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  image   Image?
+}
+
+model Image {
+  id       String    @id @default(uuid())
+  url      String
+  caption  String?
+  blockId  String    @unique
+  publicId String?
+  block    PostBlock @relation(fields: [blockId], references: [id], onDelete: Cascade)
+}
+
+model Teacher {
+  id       String  @id @default(uuid())
+  name     String
+  nip      String? @unique
+  jabatan  String
+  pesan    String
+  imageUrl String?
+  publicId String?
+}
+
+model VisiMisi {
+  id   String @id @default(uuid())
+  visi String
+  misi String
+}
+
+model Contact {
+  id      String @id @default(uuid())
+  email   String
+  address String
+  phone   String
+}
+
+model Sosmed {
+  id         String @id @default(uuid())
+  sosmedName String
+  sosmedUrl  String @default("www.example.com")
+}
+
+model SchoolProfile {
+  id                 String    @id @default(uuid())
+  namaSekolah        String
+  jenisSekolah       String
+  nss                String?
+  npsn               String?
+  tanggalBerdiri     DateTime?
+  akreditasi         String?
+  programJurusan     String?
+  izinOperasional    String?
+  luasTanah          Int?
+  kurikulum          String?
+  jamAktif           Int?
+  jumlahGuruStaff    Int?
+  jumlahSiswa        Int?
+  jumlahRombel       Int?
+  jumlahPrestasi     Int?
+  sloganSekolah      String?
+  kepsek             String?
+  nipKepsek          String?
+  masaKerja          String?
+  izinMemimpin       String?
+  statusKepegawaian  String?
+  pendidikanTerakhir String?
+  deskripsiSekolah   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Visitor {
+  id        String   @id @default(uuid())
+  postId    String
+  visitorId String // cookieId / fingerprint / ip hash
+  ipAddress String?
+  userAgent String?
+  readAt    DateTime @default(now())
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, visitorId])
+}
+
+enum Category {
+  BERITA
+  INFO
+  PENGUMUMAN
+  PRESTASI
+  PPDB
+}
+
+enum BlockType {
+  PARAGRAPH
+  IMAGE
+  VIDEO
+}
