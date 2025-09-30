@@ -106,6 +106,7 @@ export async function PUT(
     const { title, author, category, style, blocks, files }: PostFormValues =
       await parseFormData(req);
 
+    // ✅ Gunakan tipe Prisma PostBlock & Image
     const oldBlocks = await prisma.postBlock.findMany({
       where: { postId },
       include: { image: true },
@@ -117,8 +118,9 @@ export async function PUT(
     const keepBlockIds: string[] = [];
 
     for (const [i, block] of blocks.entries()) {
+      // Gunakan tipe PostBlock & Image
       const existingBlock = block.id
-        ? oldBlocks.find((b:any) => b.id === block.id)
+        ? oldBlocks.find((b: (typeof oldBlocks)[number]) => b.id === block.id)
         : null;
 
       if (block.type === "PARAGRAPH" && block.content) {
@@ -166,7 +168,6 @@ export async function PUT(
         let publicId = existingBlock?.image?.publicId || block.publicId;
 
         if (files[fileIndex]) {
-          // upload baru
           const arrayBuffer = await files[fileIndex].arrayBuffer();
           const buffer = Buffer.from(arrayBuffer);
 
@@ -181,7 +182,6 @@ export async function PUT(
             }
           );
 
-          // hapus lama kalau ada
           if (publicId) {
             await cloudinary.uploader.destroy(publicId);
           }
@@ -233,7 +233,10 @@ export async function PUT(
     }
 
     // 🔥 hapus block lama yang tidak dipakai lagi
-    const deleteBlocks = oldBlocks.filter((b:any) => !keepBlockIds.includes(b.id));
+    const deleteBlocks = oldBlocks.filter(
+      (b: (typeof oldBlocks)[number]) => !keepBlockIds.includes(b.id)
+    );
+
     for (const b of deleteBlocks) {
       if (b.image?.publicId) {
         await cloudinary.uploader.destroy(b.image.publicId);
@@ -241,7 +244,6 @@ export async function PUT(
       await prisma.postBlock.delete({ where: { id: b.id } });
     }
 
-    // eksekusi update dan create
     await Promise.all(updateBlocks);
 
     const updated = await prisma.post.update({
@@ -251,15 +253,14 @@ export async function PUT(
         author,
         category: category as Category,
         style,
-        blocks: {
-          create: createBlocks,
-        },
+        blocks: { create: createBlocks },
       },
       include: { blocks: { include: { image: true } } },
     });
 
     return NextResponse.json({ message: "Post updated", post: updated });
-  } catch {
+  } catch (err) {
+    console.error("PUT error:", err);
     return NextResponse.json(
       { error: "Failed to update post" },
       { status: 500 }
