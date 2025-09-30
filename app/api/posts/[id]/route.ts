@@ -9,12 +9,11 @@ import { NextResponse } from "next/server";
 import type { UploadApiResponse } from "cloudinary";
 import { Prisma } from "@prisma/client";
 
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: Request) {
   try {
-    const { id } = params;
+    const { pathname } = new URL(req.url);
+    const id = pathname.split("/").pop() as string;
+
     const post = await prisma.post.findUnique({
       where: { id },
       include: {
@@ -34,7 +33,7 @@ export async function GET(
 
     return NextResponse.json(post);
   } catch (error) {
-    console.error(error);
+    console.error("❌ GET Post error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -42,22 +41,20 @@ export async function GET(
   }
 }
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+
+export async function DELETE(req: Request) {
   try {
     const user = requireAuth(req);
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { id } = params;
-    const postId = id;
+    const { pathname } = new URL(req.url);
+    const id = pathname.split("/").pop() as string;
 
-    // Hapus images di DB & Cloudinary
+    // Hapus semua images terkait
     const images = await prisma.image.findMany({
-      where: { block: { postId } },
+      where: { block: { postId: id } },
     });
 
     for (const img of images) {
@@ -70,9 +67,7 @@ export async function DELETE(
       }
     }
 
-    await prisma.post.delete({
-      where: { id: postId },
-    });
+    await prisma.post.delete({ where: { id } });
 
     return NextResponse.json({ message: "✅ Post deleted", success: true });
   } catch (error) {
