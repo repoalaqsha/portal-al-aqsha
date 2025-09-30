@@ -44,13 +44,14 @@ export async function GET(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-     const user = requireAuth(req);
-         if (!user)
-           return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const postId = params.id;
+    const user = requireAuth(req);
+    if (!user)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    const { id } = await params;
+    const postId = id;
 
     // Ambil semua image terkait post
     const images = await prisma.image.findMany({
