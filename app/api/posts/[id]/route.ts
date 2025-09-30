@@ -103,70 +103,86 @@ export async function PUT(
     const { id } = await context.params;
     const postId = id;
 
-    const { title, author, category, style, blocks, files }: PostFormValues =
+    const { title, author, category, style, blocks, files } =
       await parseFormData(req);
 
-    // ✅ Gunakan tipe Prisma PostBlock & Image
+    // Ambil semua blok lama dari DB
     const oldBlocks = await prisma.postBlock.findMany({
       where: { postId },
       include: { image: true },
     });
 
-    let fileIndex = 0;
-    const createBlocks: Prisma.PostBlockCreateWithoutPostInput[] = [];
-    const updateBlocks: Promise<unknown>[] = [];
     const keepBlockIds: string[] = [];
+    const updatePromises: Promise<unknown>[] = [];
+    let fileIndex = 0;
 
     for (const [i, block] of blocks.entries()) {
-      // Gunakan tipe PostBlock & Image
       const existingBlock = block.id
         ? oldBlocks.find((b: (typeof oldBlocks)[number]) => b.id === block.id)
-        : null;
+        : undefined;
 
+      // Tangani paragraph
       if (block.type === "PARAGRAPH" && block.content) {
         if (existingBlock) {
-          updateBlocks.push(
+          updatePromises.push(
             prisma.postBlock.update({
               where: { id: block.id },
               data: {
                 type: "PARAGRAPH",
-                order: i + 1,
                 content: block.content,
+                order: i + 1,
               },
             })
           );
           keepBlockIds.push(block.id);
         } else {
-          createBlocks.push({
-            type: "PARAGRAPH",
-            order: i + 1,
-            content: block.content,
-          });
+          updatePromises.push(
+            prisma.postBlock.create({
+              data: {
+                type: "PARAGRAPH",
+                content: block.content,
+                order: i + 1,
+                postId,
+              },
+            })
+          );
         }
-      } else if (block.type === "VIDEO" && block.content) {
+      }
+
+      // Tangani video
+      else if (block.type === "VIDEO" && block.content) {
         if (existingBlock) {
-          updateBlocks.push(
+          updatePromises.push(
             prisma.postBlock.update({
               where: { id: block.id },
               data: {
                 type: "VIDEO",
-                order: i + 1,
                 content: block.content.trim(),
+                order: i + 1,
               },
             })
           );
           keepBlockIds.push(block.id);
         } else {
-          createBlocks.push({
-            type: "VIDEO",
-            order: i + 1,
-            content: block.content.trim(),
-          });
+          updatePromises.push(
+            prisma.postBlock.create({
+              data: {
+                type: "VIDEO",
+                content: block.content.trim(),
+                order: i + 1,
+                postId,
+              },
+            })
+          );
         }
-      } else if (block.type === "IMAGE") {
+      }
+
+      // Tangani image
+      else if (block.type === "IMAGE") {
         let imageUrl = existingBlock?.image?.url || block.url;
         let publicId = existingBlock?.image?.publicId || block.publicId;
 
+        // Upload baru jika ada file
         if (files[fileIndex]) {
           const arrayBuffer = await files[fileIndex].arrayBuffer();
           const buffer = Buffer.from(arrayBuffer);
@@ -174,17 +190,16 @@ export async function PUT(
           const uploadRes: UploadApiResponse = await new Promise(
             (resolve, reject) => {
               cloudinary.uploader
-                .upload_stream({ folder: "posts" }, (error, result) => {
-                  if (error || !result) reject(error);
+                .upload_stream({ folder: "posts" }, (err, result) => {
+                  if (err || !result) reject(err);
                   else resolve(result);
                 })
                 .end(buffer);
             }
           );
 
-          if (publicId) {
-            await cloudinary.uploader.destroy(publicId);
-          }
+          // Hapus lama
+          if (publicId) await cloudinary.uploader.destroy(publicId);
 
           imageUrl = uploadRes.secure_url;
           publicId = uploadRes.public_id;
@@ -192,7 +207,7 @@ export async function PUT(
         }
 
         if (existingBlock && imageUrl) {
-          updateBlocks.push(
+          updatePromises.push(
             prisma.postBlock.update({
               where: { id: block.id },
               data: {
@@ -217,48 +232,46 @@ export async function PUT(
           );
           keepBlockIds.push(block.id);
         } else if (imageUrl) {
-          createBlocks.push({
-            type: "IMAGE",
-            order: i + 1,
-            image: {
-              create: {
-                url: imageUrl,
-                publicId,
-                caption: block.caption || "",
+          updatePromises.push(
+            prisma.postBlock.create({
+              data: {
+                type: "IMAGE",
+                order: i + 1,
+                postId,
+                image: {
+                  create: {
+                    url: imageUrl,
+                    publicId,
+                    caption: block.caption || "",
+                  },
+                },
               },
-            },
-          });
+            })
+          );
         }
       }
     }
 
-    // 🔥 hapus block lama yang tidak dipakai lagi
+    // Hapus block lama yang tidak dipakai
     const deleteBlocks = oldBlocks.filter(
       (b: (typeof oldBlocks)[number]) => !keepBlockIds.includes(b.id)
     );
-
     for (const b of deleteBlocks) {
-      if (b.image?.publicId) {
+      if (b.image?.publicId)
         await cloudinary.uploader.destroy(b.image.publicId);
-      }
-      await prisma.postBlock.delete({ where: { id: b.id } });
+      updatePromises.push(prisma.postBlock.delete({ where: { id: b.id } }));
     }
 
-    await Promise.all(updateBlocks);
+    await Promise.all(updatePromises);
 
-    const updated = await prisma.post.update({
+    // Update post utama
+    const updatedPost = await prisma.post.update({
       where: { id: postId },
-      data: {
-        title,
-        author,
-        category: category as Category,
-        style,
-        blocks: { create: createBlocks },
-      },
+      data: { title, author, category, style },
       include: { blocks: { include: { image: true } } },
     });
 
-    return NextResponse.json({ message: "Post updated", post: updated });
+    return NextResponse.json({ message: "Post updated", post: updatedPost });
   } catch (err) {
     console.error("PUT error:", err);
     return NextResponse.json(
