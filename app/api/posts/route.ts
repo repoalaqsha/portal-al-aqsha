@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import cloudinary from "@/lib/cloudinary";
 import { requireAuth } from "@/lib/auth";
 import { PostFormValues } from "@/types/backend";
-import { Category } from "@/types/SchoolTypes"; // category masih bisa pakai SchoolTypes
+import { Category } from "@/types/SchoolTypes";
 import type { Prisma, $Enums } from "@prisma/client";
 import type { UploadApiResponse } from "cloudinary";
 
@@ -54,82 +54,80 @@ async function parseFormData(req: Request): Promise<PostFormValues> {
   };
 }
 
+type BlockToCreate = {
+  type: "PARAGRAPH" | "VIDEO" | "IMAGE";
+  order: number;
+  content?: string;
+  image?: {
+    create: {
+      url: string;
+      publicId: string;
+      caption: string;
+    };
+  };
+};
+
 export async function POST(req: Request) {
   try {
     const user = requireAuth(req);
-    if (!user) {
+    if (!user)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
 
     const { title, category, style, author, blocks, files } =
       await parseFormData(req);
 
-    if (!category) {
-      throw new Error("Category is required");
-    }
+    const createdBlocks: BlockToCreate[] = [];
 
-    const prismaBlocks = await Promise.all(
-      blocks.map(async (block, index) => {
-        const order = block.order || index + 1;
-        const type = block.type as $Enums.BlockType;
+    let fileIndex = 0;
 
-        switch (type) {
-          case "PARAGRAPH":
-            return {
-              type,
-              order,
-              content: block.content || "",
-            };
+    for (const [i, block] of blocks.entries()) {
+      const order = block.order || i + 1;
 
-          case "VIDEO":
-            return {
-              type,
-              order,
-              content: block.content?.trim() || "",
-            };
+      if (block.type === "PARAGRAPH" && block.content) {
+        createdBlocks.push({
+          type: "PARAGRAPH",
+          order,
+          content: block.content,
+        });
+      } else if (block.type === "VIDEO" && block.content) {
+        createdBlocks.push({
+          type: "VIDEO",
+          order,
+          content: block.content.trim(),
+        });
+      } else if (block.type === "IMAGE") {
+        const file = files[fileIndex];
+        if (!file) continue;
 
-          case "IMAGE": {
-            const file = files.shift();
-            if (!file) return null;
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
 
-            const arrayBuffer = await file.arrayBuffer();
-            const buffer = Buffer.from(arrayBuffer);
-
-            const uploadRes: UploadApiResponse = await new Promise(
-              (resolve, reject) => {
-                cloudinary.uploader
-                  .upload_stream({ folder: "posts" }, (err, result) => {
-                    if (err || !result) reject(err);
-                    else resolve(result);
-                  })
-                  .end(buffer);
-              }
-            );
-
-            return {
-              type,
-              order,
-              image: {
-                create: {
-                  url: uploadRes.secure_url,
-                  publicId: uploadRes.public_id,
-                  caption: block.caption || "Uploaded image",
-                },
-              },
-            };
+        const uploadRes: UploadApiResponse = await new Promise(
+          (resolve, reject) => {
+            cloudinary.uploader
+              .upload_stream({ folder: "posts" }, (err, result) => {
+                if (err || !result) reject(err);
+                else resolve(result);
+              })
+              .end(buffer);
           }
+        );
 
-          default:
-            return null;
-        }
-      })
-    );
+        createdBlocks.push({
+          type: "IMAGE",
+          order,
+          image: {
+            create: {
+              url: uploadRes.secure_url,
+              publicId: uploadRes.public_id,
+              caption: block.caption || "Uploaded image",
+            },
+          },
+        });
 
-    // 🔥 filter out null dan pastikan tipenya sesuai Prisma
-  const prismaBlocksFiltered = prismaBlocks.filter(
-    (b) => b !== null
-  ) as Prisma.PostBlockCreateWithoutPostInput[];
-
+        fileIndex++;
+      }
+    }
 
     const createdPost = await prisma.post.create({
       data: {
@@ -137,17 +135,14 @@ export async function POST(req: Request) {
         category,
         style,
         author,
-        blocks: { create: prismaBlocksFiltered },
+        blocks: { create: createdBlocks },
       },
       include: { blocks: { include: { image: true } } },
     });
 
-    return NextResponse.json(
-      { message: "Post created", createdPost },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: "Post created", post: createdPost });
   } catch (err) {
-    console.error("Error creating post:", err);
+    console.error("POST error:", err);
     return NextResponse.json(
       { error: "Failed to create post" },
       { status: 500 }
