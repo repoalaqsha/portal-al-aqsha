@@ -29,7 +29,7 @@ async function fetchPosts({
 }
 
 export default function PostsPage({
-  category = "INFORMASI",
+  category = "INFO",
 }: {
   category?: string;
 }) {

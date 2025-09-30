@@ -12,7 +12,7 @@ export async function PATCH(
       data: body,
     });
     return NextResponse.json(contact);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Failed to update contact" },
       { status: 500 }

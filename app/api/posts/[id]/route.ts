@@ -3,6 +3,8 @@
 import { requireAuth } from "@/lib/auth";
 import cloudinary from "@/lib/cloudinary";
 import { prisma } from "@/lib/prisma";
+import { PostFormValues } from "@/types/backend";
+import { Category } from "@/types/SchoolTypes";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -79,17 +81,19 @@ export async function DELETE(
 }
 
 
-async function parseFormData(req: Request) {
+async function parseFormData(req: Request): Promise<PostFormValues> {
   const formData = await req.formData();
+
   return {
     title: formData.get("title") as string,
-    author: formData.get("author") as string,
-    category: (formData.get("category") as string)?.toUpperCase(),
+    category: (formData.get("category") as Category) || Category.BERITA,
     style: parseInt(formData.get("style") as string, 10) || 1,
+    author: formData.get("author") as string,
     blocks: JSON.parse(formData.get("blocks") as string),
     files: formData.getAll("files") as File[],
   };
 }
+
 
 export async function PUT(
   req: Request,
@@ -102,10 +106,9 @@ export async function PUT(
     const { id } = await context.params;
     const postId = id;
 
-    const { title, author, category, style, blocks, files } =
+    const { title, author, category, style, blocks, files }:PostFormValues =
       await parseFormData(req);
 
-    // 🔥 ambil data lama
     const oldBlocks = await prisma.postBlock.findMany({
       where: { postId },
       include: { image: true },
