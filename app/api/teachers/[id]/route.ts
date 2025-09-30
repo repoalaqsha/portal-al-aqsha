@@ -93,8 +93,8 @@ export async function PUT(req: Request) {
     });
 
     return NextResponse.json(updated);
-  } catch (error: any) {
-    if (error?.code === "P2002") {
+  } catch (error) {
+    if ((error as any)?.code === "P2002") {
       return NextResponse.json(
         { error: "NIP already exists" },
         { status: 409 }
