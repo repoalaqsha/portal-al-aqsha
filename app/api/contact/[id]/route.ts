@@ -3,14 +3,17 @@ import { prisma } from "@/lib/prisma";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params; // ← harus await
     const body = await req.json();
+
     const contact = await prisma.contact.update({
-      where: { id: params.id },
+      where: { id },
       data: body,
     });
+
     return NextResponse.json(contact);
   } catch {
     return NextResponse.json(
