@@ -4,7 +4,6 @@ import cloudinary from "@/lib/cloudinary";
 import { requireAuth } from "@/lib/auth";
 import { PostFormValues } from "@/types/backend";
 import { Category } from "@/types/SchoolTypes";
-import type { Prisma, $Enums } from "@prisma/client";
 import type { UploadApiResponse } from "cloudinary";
 
 export async function GET(req: Request) {
