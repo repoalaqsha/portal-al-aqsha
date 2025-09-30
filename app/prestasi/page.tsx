@@ -2,6 +2,7 @@
 
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useRef, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
@@ -16,7 +17,7 @@ async function fetchPosts({
   category,
 }: {
   pageParam?: number | null;
-  category?: string;
+  category: string;
 }) {
   const url = new URL("/api/posts", window.location.origin);
   url.searchParams.set("limit", "3");
@@ -28,11 +29,10 @@ async function fetchPosts({
   return res.json();
 }
 
-export default function PostsPage({
-  category = "PRESTASI",
-}: {
-  category?: string;
-}) {
+export default function PostsPage() {
+  const searchParams = useSearchParams();
+  const category = searchParams.get("category") ?? "PRESTASI";
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
       queryKey: ["posts", category],
@@ -47,20 +47,16 @@ export default function PostsPage({
     if (!hasNextPage || !loadMoreRef.current) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
-          fetchNextPage();
-        }
+        if (entries[0].isIntersecting) fetchNextPage();
       },
       { threshold: 1 }
     );
     observer.observe(loadMoreRef.current);
-    return () => {
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, [hasNextPage, fetchNextPage]);
 
   return (
-    <div className="container mx-auto p-6 grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-6">
+    <div className="container mx-auto p-6 grid grid-cols-1 gap-6">
       {data?.pages.map((page) =>
         page.posts.map((post: Post) => {
           const firstImage = post.blocks.find(
@@ -86,6 +82,7 @@ export default function PostsPage({
                     </p>
                     <VisitorCount postId={post.id} />
                   </CardHeader>
+
                   <CardContent>
                     {post.style === 1 && firstImage && (
                       <div className="relative w-full h-48 md:h-100 mb-4">
@@ -127,10 +124,8 @@ export default function PostsPage({
                       );
                       if (!firstText) return null;
                       const excerpt =
-                        firstText?.content?.slice(0, 120) +
-                        (firstText?.content && firstText.content.length > 120
-                          ? "..."
-                          : "");
+                        (firstText.content?.slice(0, 120) ?? "") +
+                        ((firstText.content?.length ?? 0) > 120 ? "..." : "");
                       return (
                         <p className="text-gray-700 text-sm leading-relaxed line-clamp-3">
                           {excerpt}
@@ -151,6 +146,7 @@ export default function PostsPage({
         })
       )}
 
+      {/* Load more indicator */}
       <div ref={loadMoreRef} className="col-span-full text-center py-6">
         {isFetchingNextPage
           ? "Loading more..."
