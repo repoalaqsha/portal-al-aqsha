@@ -11,10 +11,10 @@ import { Prisma } from "@prisma/client";
 
 export async function GET(
   req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const { id } = params;
     const post = await prisma.post.findUnique({
       where: { id },
       include: {
@@ -44,21 +44,22 @@ export async function GET(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     const user = requireAuth(req);
-    if (!user)
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    const { id } = await params;
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { id } = params;
     const postId = id;
 
-    // Ambil semua image terkait post
+    // Hapus images di DB & Cloudinary
     const images = await prisma.image.findMany({
       where: { block: { postId } },
     });
 
-    // Hapus semua file di Cloudinary
     for (const img of images) {
       if (img.publicId) {
         try {
@@ -69,7 +70,6 @@ export async function DELETE(
       }
     }
 
-    // Hapus post (cascade hapus block + image kalau schema support)
     await prisma.post.delete({
       where: { id: postId },
     });
@@ -83,6 +83,7 @@ export async function DELETE(
     );
   }
 }
+
 
 
 async function parseFormData(req: Request): Promise<PostFormValues> {
