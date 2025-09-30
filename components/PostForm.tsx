@@ -17,6 +17,7 @@ import Image from "next/image";
 import { getYoutubeEmbedUrl } from "@/utils/youtube";
 import { DeletePostButton } from "./btn-delete-post";
 import { Trash2 } from "lucide-react";
+import { Post } from "@/types/SchoolTypes";
 
 type Block = {
   id: string;
@@ -26,7 +27,7 @@ type Block = {
   file?: File;
   url?: string;
   image?: {
-    id: number;
+    id: string;
     url: string;
     caption: string;
     blockId: number;
@@ -35,7 +36,7 @@ type Block = {
 
 type PostFormProps = {
   mode?: "create" | "edit";
-  initialData?: any;
+  initialData?: Post | null;
   onSubmit: (formData: FormData) => Promise<any>;
   isPending?: boolean;
   user?: any; // 🔥 auth dipass lewat props
@@ -64,7 +65,7 @@ export default function PostForm({
       setStyle(initialData.style);
 
       const mappedBlocks: Block[] = initialData.blocks.map((b: any) => ({
-        id: b.id.toString(),
+        id: b.id,
         type: b.type,
         content: b.type === "PARAGRAPH" || b.type === "VIDEO" ? b.content : "",
         caption: b.type === "IMAGE" ? b.image?.caption : "",
@@ -77,7 +78,7 @@ export default function PostForm({
   }, [initialData]);
 
   // 🔄 reorder
-  const handleDragEnd = (result: any) => {
+  const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
     const reordered = Array.from(blocks);
     const [removed] = reordered.splice(result.source.index, 1);
@@ -122,7 +123,7 @@ export default function PostForm({
               ? b.content
               : undefined,
           caption:
-            b.type === "IMAGE" || b.type === "VIDEO" ? b.caption : undefined,
+            b.type === "IMAGE" ? b.caption : undefined,
           order: index + 1,
           url: b.url,
         }))
@@ -136,7 +137,6 @@ export default function PostForm({
     await onSubmit(formData);
   };
 
-  // ================= VIEW MODE =================
   if (!isEditing) {
     return (
       <div className="max-w-2xl mx-auto p-4 space-y-4">
@@ -144,7 +144,6 @@ export default function PostForm({
         <p className="text-gray-500">
           By {author} • {category}
         </p>
-        
 
         {blocks.map((block) =>
           block.type === "PARAGRAPH" ? (

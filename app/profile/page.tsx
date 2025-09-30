@@ -1,5 +1,6 @@
 "use client";
 
+import SchoolProfilePage from "@/components/profile-school";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 
@@ -18,10 +19,11 @@ export default function HomePage() {
   const opacity = useTransform(scrollYProgress, [0, 1], [0.3, 1]);
 
   return (
-    <div className="space-y-40 p-">
+    <div className="space-y-10 ">
       {/* Hero */}
-      <section className="h-screen flex items-center justify-center bg-gray-200">
-        <h1 className="text-4xl font-bold">Hero Section</h1>
+      <section className=" flex items-center justify-center bg-gray-200">
+      
+        <SchoolProfilePage />
       </section>
 
       {/* About dengan animasi scale on scroll */}
@@ -34,9 +36,7 @@ export default function HomePage() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         style={{ scale, opacity }}
         className="h-screen flex items-center justify-center bg-green-200"
-      >
-        <h2 className="text-4xl font-bold">About Section 🚀</h2>
-      </motion.section>
+      ></motion.section>
 
       {/* Extra section biar ada space scroll */}
       <section className="h-screen bg-gray-100 flex items-center justify-center">

@@ -9,6 +9,7 @@ import Link from "next/link";
 import { getYoutubeEmbedUrl } from "@/utils/youtube";
 import Reveal from "@/components/reveal";
 import VisitorCount from "@/components/visitor-count";
+import { Post, PostBlock } from "@/types/SchoolTypes";
 
 async function fetchPosts({
   pageParam = null,
@@ -61,12 +62,11 @@ export default function PostsPage({
   return (
     <div className="container mx-auto p-6 grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-6">
       {data?.pages.map((page, i) =>
-        page.posts.map((post: any) => {
-          // cari media pertama
+        page.posts.map((post: Post) => {
           const firstImage = post.blocks.find(
-            (b: any) => b.type === "IMAGE" && b.image
+            (b: PostBlock) => b.type === "IMAGE" && b.image
           );
-          const firstVideo = post.blocks.find((b: any) => b.type === "VIDEO");
+          const firstVideo = post.blocks.find((b: PostBlock) => b.type === "VIDEO");
 
           return (
             <Reveal>
@@ -89,35 +89,34 @@ export default function PostsPage({
                     <VisitorCount postId={post.id} />
                   </CardHeader>
                   <CardContent>
-                    {/* Style 1 → gambar horizontal */}
+                    
                     {post.style === 1 && firstImage && (
                       <div className="relative w-full h-48 md:h-100 mb-4">
                         <Image
-                          src={firstImage.image.url}
-                          alt={firstImage.image.caption || "Thumbnail"}
+                          src={firstImage.image?.url || ""}
+                          alt={firstImage.image?.caption || "Thumbnail"}
                           fill
                           className="object-cover rounded-xl"
                         />
                       </div>
                     )}
 
-                    {/* Style 2 → gambar panjang */}
+                   
                     {post.style === 2 && firstImage && (
                       <div className="relative w-full h-96 mb-4">
                         <Image
-                          src={firstImage.image.url}
-                          alt={firstImage.image.caption || "Thumbnail"}
+                          src={firstImage.image?.url || ""}
+                          alt={firstImage.image?.caption || "Thumbnail"}
                           fill
                           className="object-cover rounded-xl"
                         />
                       </div>
                     )}
 
-                    {/* Style 3 → video */}
                     {post.style === 3 && firstVideo && (
                       <div className="aspect-video mb-4">
                         <iframe
-                          src={getYoutubeEmbedUrl(firstVideo.content)}
+                          src={getYoutubeEmbedUrl(firstVideo.content ?? "")}
                           title="Video"
                           className="w-full h-full rounded-xl"
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -126,15 +125,14 @@ export default function PostsPage({
                       </div>
                     )}
 
-                    {/* Excerpt text */}
                     {(() => {
                       const firstText = post.blocks.find(
-                        (b: any) => b.type === "PARAGRAPH" && b.content
+                        (b: PostBlock) => b.type === "PARAGRAPH" && b.content
                       );
                       if (!firstText) return null;
                       const excerpt =
-                        firstText.content.slice(0, 120) +
-                        (firstText.content.length > 120 ? "..." : "");
+                        firstText?.content?.slice(0, 120) +
+                        (firstText?.content && firstText.content.length > 120 ? "..." : "");
                       return (
                         <p className="text-gray-700 text-sm leading-relaxed line-clamp-3">
                           {excerpt}
@@ -142,7 +140,7 @@ export default function PostsPage({
                       );
                     })()}
 
-                    {/* Fallback kalau tidak ada media sama sekali */}
+                   
                     {!firstImage && !firstVideo && (
                       <div className="w-full h-48 flex items-center justify-center bg-gray-200 text-gray-500 rounded-xl">
                         No Media

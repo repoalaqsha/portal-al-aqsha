@@ -60,15 +60,15 @@ export default function RootLayout({
           </header>
 
           {/* Konten Utama */}
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 pb-10">{children}</main>
 
           {/* Toast dalam provider */}
           <Toaster />
 
           {/* Footer */}
-          {/* <footer className="bg-gray-800 text-white p-4 mt-auto text-center text-sm tracking-wide">
+          <footer className="bg-gray-800 text-white p-4 text-center text-sm tracking-wide mt-auto">
             COPYRIGHT © 2025 — MTSS AL-AQSHA KELAPA GADING TIMUR
-          </footer> */}
+          </footer>
         </Providers>
       </body>
     </html>

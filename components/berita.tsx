@@ -53,7 +53,7 @@ export default function Berita({ category = "BERITA" }: { category?: string }) {
               className="min-w-full flex-shrink-0 flex items-center justify-center"
             >
               <Link
-                href={`/ppdb-mts-al-aqsha/${post.id}`}
+                href={`/berita/${post.id}`}
                 className="group relative w-full h-[220px] md:h-[420px] overflow-hidden shadow-xl rounded-"
               >
                 {/* Background image */}

@@ -11,7 +11,7 @@ export default function KepsekReveal({ children }: PropsWithChildren) {
       whileInView={{ opacity: 1, y: 50 }}
       viewport={{ once: true, amount: 0.5 }}
       transition={{ duration: 2, ease: "easeIn" }}
-      className="w-full col-span-1 lg:col-span-6 mb-20 lg:mb-0"
+      className="w-full  lg:col-span-6 "
     >
       {children}
     </motion.div>
