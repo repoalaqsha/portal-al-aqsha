@@ -7,7 +7,6 @@ import { PostFormValues } from "@/types/backend";
 import { Category } from "@/types/SchoolTypes";
 import { NextResponse } from "next/server";
 import type { UploadApiResponse } from "cloudinary";
-import type { Prisma } from "@prisma/client";
 
 export async function GET(req: Request) {
   try {
@@ -41,7 +40,6 @@ export async function GET(req: Request) {
   }
 }
 
-
 export async function DELETE(req: Request) {
   try {
     const user = requireAuth(req);
@@ -72,11 +70,12 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ message: "✅ Post deleted", success: true });
   } catch (error) {
     console.error("❌ Delete post error:", error);
-    return NextResponse.json({ error: "Failed to delete post" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to delete post" },
+      { status: 500 }
+    );
   }
 }
-
-
 
 async function parseFormData(req: Request): Promise<PostFormValues> {
   const formData = await req.formData();
@@ -90,6 +89,19 @@ async function parseFormData(req: Request): Promise<PostFormValues> {
     files: formData.getAll("files") as File[],
   };
 }
+
+type PostBlockWithImageInput = {
+  type: "PARAGRAPH" | "VIDEO" | "IMAGE";
+  order: number;
+  content?: string;
+  image?: {
+    create: {
+      url: string;
+      publicId: string | undefined | null;
+      caption?: string;
+    };
+  };
+};
 
 export async function PUT(
   req: Request,
@@ -112,7 +124,8 @@ export async function PUT(
     });
 
     let fileIndex = 0;
-    const createBlocks: Prisma.PostBlockCreateWithoutPostInput[] = [];
+    const createBlocks: PostBlockWithImageInput[] = [];
+
     const updateBlocks: Promise<unknown>[] = [];
     const keepBlockIds: string[] = [];
 
@@ -260,7 +273,6 @@ export async function PUT(
 
     return NextResponse.json({ message: "Post updated", post: updated });
   } catch {
-   
     return NextResponse.json(
       { error: "Failed to update post" },
       { status: 500 }
