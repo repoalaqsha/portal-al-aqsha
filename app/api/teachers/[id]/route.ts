@@ -11,7 +11,7 @@ export async function GET(
   try {
     const { id } = await params;
     const teacher = await prisma.teacher.findUnique({
-      where: { id},
+      where: { id },
     });
 
     if (!teacher) {
@@ -93,8 +93,9 @@ export async function PUT(req: Request) {
     });
 
     return NextResponse.json(updated);
-  } catch (error) {
-    if ((error as any)?.code === "P2002") {
+  } catch (error: unknown) {
+    const err = error as { code?: string };
+    if (err?.code === "P2002") {
       return NextResponse.json(
         { error: "NIP already exists" },
         { status: 409 }
@@ -106,7 +107,6 @@ export async function PUT(req: Request) {
     );
   }
 }
-
 
 // DELETE teacher
 export async function DELETE(req: Request) {
@@ -128,8 +128,7 @@ export async function DELETE(req: Request) {
     await prisma.teacher.delete({ where: { id } });
 
     return NextResponse.json({ message: "Teacher deleted" });
-  } catch (error) {
-    console.error("Delete teacher error:", error);
+  } catch {
     return NextResponse.json(
       { error: "Failed to delete teacher" },
       { status: 500 }
