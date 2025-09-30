@@ -8,12 +8,11 @@ function getIp(req: Request) {
   return forwarded ? forwarded.split(",")[0].trim() : "0.0.0.0";
 }
 
-export async function POST(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: Request) {
   try {
-    const { id: postId } = params;
+    // Ambil id dari URL
+    const { pathname } = new URL(req.url);
+    const postId = pathname.split("/").slice(-2, -1)[0]; // ambil [id] sebelum "visitor"
 
     // ambil / buat visitorId cookie
     const cookieStore = await cookies();
