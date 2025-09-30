@@ -1,16 +1,17 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
+import type { Prisma } from "@prisma/client";
 
 export async function PATCH(req: Request) {
   try {
     const url = new URL(req.url);
     const segments = url.pathname.split("/");
-    const id = segments[segments.length - 1]; // ambil id dari path
+    const id = segments[segments.length - 1]; 
 
     const body = await req.json();
 
-    const dataToUpdate: any = { ...body }; // bisa kasih type yang lebih spesifik kalau mau
+    const dataToUpdate: Prisma.UserUpdateInput = { ...body };
 
     if (body.password) {
       const hashedPassword = await bcrypt.hash(body.password, 10);

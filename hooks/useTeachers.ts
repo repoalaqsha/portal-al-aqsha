@@ -1,5 +1,6 @@
 "use client";
 
+import { Teacher } from "@/types/SchoolTypes";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export function useTeachers() {
@@ -18,7 +19,7 @@ export function useHeadTeachers() {
 
   return {
     data:
-      data?.filter((t:any) => t.jabatan?.toLowerCase() === "kepala sekolah") ?? [],
+      data?.filter((t:Teacher) => t.jabatan?.toLowerCase() === "kepala sekolah") ?? [],
     ...rest,
   };
 }
