@@ -6,11 +6,12 @@ import { requireAuth } from "@/lib/auth";
 // GET single teacher
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const teacher = await prisma.teacher.findUnique({
-      where: { id: params.id },
+      where: { id},
     });
 
     if (!teacher) {

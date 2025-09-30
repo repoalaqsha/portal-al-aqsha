@@ -11,11 +11,12 @@ import { Prisma } from "@prisma/client";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const post = await prisma.post.findUnique({
-      where: { id: (params.id) },
+      where: { id },
       include: {
         blocks: {
           orderBy: { order: "asc" },

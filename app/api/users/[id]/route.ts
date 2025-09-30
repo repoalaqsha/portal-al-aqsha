@@ -21,10 +21,8 @@ export async function PATCH(
       data: dataToUpdate,
     });
 
-    // pakai _password biar linter tau kita sengaja buang
-    const { password, ...safeUser } = user;
 
-    return NextResponse.json(safeUser);
+    return NextResponse.json(user);
   } catch {
     return NextResponse.json(
       { error: "Failed to update user" },

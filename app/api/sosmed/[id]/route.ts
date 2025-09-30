@@ -3,16 +3,17 @@ import { prisma } from "@/lib/prisma";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await req.json();
     const sosmed = await prisma.sosmed.update({
-      where: { id: params.id },
+      where: { id },
       data: body,
     });
     return NextResponse.json(sosmed);
-  } catch  {
+  } catch {
     return NextResponse.json(
       { error: "Failed to update sosmed" },
       { status: 500 }

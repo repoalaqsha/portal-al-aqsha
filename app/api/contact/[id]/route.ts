@@ -6,7 +6,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params; // ← harus await
+    const { id } = await params; 
     const body = await req.json();
 
     const contact = await prisma.contact.update({

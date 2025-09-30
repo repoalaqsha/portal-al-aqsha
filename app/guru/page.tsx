@@ -7,7 +7,7 @@ const TeacherCarousel = dynamic(() => import("@/components/teacher-carousel"), {
   loading: () => <p>Loading guru...</p>,
 });
 
-export default function Page() {
+export default function GuruPage() {
   return (
     <div className="w-[90%] max-w-6xl mx-auto px-4">
       <TeacherCarousel />
