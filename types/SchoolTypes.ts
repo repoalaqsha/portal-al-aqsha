@@ -46,7 +46,12 @@ export interface PostBlock {
   order: number;
   postId: string;
 
-  image?: Image | null;
+  image?: {
+    id: string;
+    url: string;
+    caption: string; // <-- HARUS string, ga boleh null/undefined
+    blockId: number;
+  } | null;
 }
 
 // ---------------------

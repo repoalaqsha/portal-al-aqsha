@@ -17,7 +17,7 @@ import Image from "next/image";
 import { getYoutubeEmbedUrl } from "@/utils/youtube";
 import { DeletePostButton } from "./btn-delete-post";
 import { Trash2 } from "lucide-react";
-import { Post } from "@/types/SchoolTypes";
+import { Post, PostBlock } from "@/types/SchoolTypes";
 
 type Block = {
   id: string;
@@ -37,9 +37,9 @@ type Block = {
 type PostFormProps = {
   mode?: "create" | "edit";
   initialData?: Post | null;
-  onSubmit: (formData: FormData) => Promise<any>;
+  onSubmit: (formData: FormData) => Promise<void>;
   isPending?: boolean;
-  user?: any; // 🔥 auth dipass lewat props
+  user?: { id: string; name?: string } | null;
 };
 
 export default function PostForm({
@@ -64,11 +64,17 @@ export default function PostForm({
       setCategory(initialData.category);
       setStyle(initialData.style);
 
-      const mappedBlocks: Block[] = initialData.blocks.map((b: any) => ({
+      const mappedBlocks: Block[] = initialData.blocks.map((b: PostBlock) => ({
         id: b.id,
         type: b.type,
-        content: b.type === "PARAGRAPH" || b.type === "VIDEO" ? b.content : "",
-        caption: b.type === "IMAGE" ? b.image?.caption : "",
+        content:
+          b.type === "PARAGRAPH" || b.type === "VIDEO"
+            ? b.content ?? ""
+            : undefined,
+        caption:
+          b.type === "IMAGE"
+            ? b.image?.caption ?? ""
+            : undefined,
         url: b.type === "IMAGE" ? b.image?.url : undefined,
         image: b.image || null,
       }));

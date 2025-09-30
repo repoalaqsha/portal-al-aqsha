@@ -61,7 +61,7 @@ export default function PostsPage({
 
   return (
     <div className="container mx-auto p-6 grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-6">
-      {data?.pages.map((page, i) =>
+      {data?.pages.map((page) =>
         page.posts.map((post: Post) => {
           const firstImage = post.blocks.find(
             (b: PostBlock) => b.type === "IMAGE" && b.image

@@ -3,7 +3,9 @@ import { prisma } from "@/lib/prisma";
 import cloudinary from "@/lib/cloudinary";
 import { requireAuth } from "@/lib/auth";
 import { PostFormValues } from "@/types/backend";
-import { BlockType, Category } from "@/types/SchoolTypes";
+import { Category } from "@/types/SchoolTypes"; // category masih bisa pakai SchoolTypes
+import type { Prisma, $Enums } from "@prisma/client";
+import type { UploadApiResponse } from "cloudinary";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -69,40 +71,43 @@ export async function POST(req: Request) {
     const prismaBlocks = await Promise.all(
       blocks.map(async (block, index) => {
         const order = block.order || index + 1;
+        const type = block.type as $Enums.BlockType;
 
-        switch (block.type) {
-          case BlockType.PARAGRAPH:
+        switch (type) {
+          case "PARAGRAPH":
             return {
-              type: BlockType.PARAGRAPH,
+              type,
               order,
               content: block.content || "",
             };
 
-          case BlockType.VIDEO:
+          case "VIDEO":
             return {
-              type: BlockType.VIDEO,
+              type,
               order,
               content: block.content?.trim() || "",
             };
 
-          case BlockType.IMAGE: {
+          case "IMAGE": {
             const file = files.shift();
             if (!file) return null;
 
             const arrayBuffer = await file.arrayBuffer();
             const buffer = Buffer.from(arrayBuffer);
 
-            const uploadRes: any = await new Promise((resolve, reject) => {
-              cloudinary.uploader
-                .upload_stream({ folder: "posts" }, (err, result) => {
-                  if (err) reject(err);
-                  else resolve(result);
-                })
-                .end(buffer);
-            });
+            const uploadRes: UploadApiResponse = await new Promise(
+              (resolve, reject) => {
+                cloudinary.uploader
+                  .upload_stream({ folder: "posts" }, (err, result) => {
+                    if (err || !result) reject(err);
+                    else resolve(result);
+                  })
+                  .end(buffer);
+              }
+            );
 
             return {
-              type: BlockType.IMAGE,
+              type,
               order,
               image: {
                 create: {
@@ -120,13 +125,19 @@ export async function POST(req: Request) {
       })
     );
 
+    // 🔥 filter out null dan pastikan tipenya sesuai Prisma
+  const prismaBlocksFiltered = prismaBlocks.filter(
+    (b) => b !== null
+  ) as Prisma.PostBlockCreateWithoutPostInput[];
+
+
     const createdPost = await prisma.post.create({
       data: {
         title,
         category,
         style,
         author,
-        blocks: { create: prismaBlocks.filter(Boolean) as any },
+        blocks: { create: prismaBlocksFiltered },
       },
       include: { blocks: { include: { image: true } } },
     });

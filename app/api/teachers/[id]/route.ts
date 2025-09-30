@@ -98,18 +98,21 @@ export async function PUT(
     });
 
     return NextResponse.json(updated);
-  } catch (error: any) {
+  } catch (error) {
     console.error("Update teacher error:", error);
-    if ((error as any)?.code === "P2002") {
-      return NextResponse.json(
-        { error: "NIP already exists" },
-        { status: 409 }
-      );
-    }
-    return NextResponse.json(
-      { error: "Failed to update teacher" },
-      { status: 500 }
-    );
+ if (
+   typeof error === "object" &&
+   error !== null &&
+   "code" in error &&
+   error.code === "P2002"
+ ) {
+   return NextResponse.json({ error: "NIP already exists" }, { status: 409 });
+ }
+
+ return NextResponse.json(
+   { error: "Failed to update teacher" },
+   { status: 500 }
+ );
   }
 }
 

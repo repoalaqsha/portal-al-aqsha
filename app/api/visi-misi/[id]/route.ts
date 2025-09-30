@@ -12,7 +12,7 @@ export async function PATCH(
       data: body,
     });
     return NextResponse.json(visiMisi);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Failed to update visi & misi" },
       { status: 500 }

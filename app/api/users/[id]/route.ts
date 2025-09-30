@@ -9,7 +9,7 @@ export async function PATCH(
   try {
     const body = await req.json();
 
-    let dataToUpdate = { ...body };
+    const dataToUpdate = { ...body };
 
     if (body.password) {
       const hashedPassword = await bcrypt.hash(body.password, 10);
@@ -21,10 +21,12 @@ export async function PATCH(
       data: dataToUpdate,
     });
 
-    const { password, ...safeUser } = user;
+    // pakai _password biar linter tau kita sengaja buang
+    const { password: _password, ...safeUser } = user;
 
     return NextResponse.json(safeUser);
-  } catch (error) {
+  } catch (_error) {
+    console.error("Update user error:", _error);
     return NextResponse.json(
       { error: "Failed to update user" },
       { status: 500 }

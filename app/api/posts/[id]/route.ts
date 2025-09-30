@@ -6,6 +6,8 @@ import { prisma } from "@/lib/prisma";
 import { PostFormValues } from "@/types/backend";
 import { Category } from "@/types/SchoolTypes";
 import { NextResponse } from "next/server";
+import type { UploadApiResponse } from "cloudinary";
+import { Prisma } from "@prisma/client";
 
 export async function GET(
   req: Request,
@@ -94,19 +96,19 @@ async function parseFormData(req: Request): Promise<PostFormValues> {
   };
 }
 
-
 export async function PUT(
   req: Request,
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-  const user = requireAuth(req);
-  if (!user)
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const user = requireAuth(req);
+    if (!user)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     const { id } = await context.params;
     const postId = id;
 
-    const { title, author, category, style, blocks, files }:PostFormValues =
+    const { title, author, category, style, blocks, files }: PostFormValues =
       await parseFormData(req);
 
     const oldBlocks = await prisma.postBlock.findMany({
@@ -115,8 +117,8 @@ export async function PUT(
     });
 
     let fileIndex = 0;
-    const createBlocks: any[] = [];
-    const updateBlocks: any[] = [];
+    const createBlocks: Prisma.PostBlockCreateWithoutPostInput[] = [];
+    const updateBlocks: Promise<unknown>[] = [];
     const keepBlockIds: string[] = [];
 
     for (const [i, block] of blocks.entries()) {
@@ -173,14 +175,16 @@ export async function PUT(
           const arrayBuffer = await files[fileIndex].arrayBuffer();
           const buffer = Buffer.from(arrayBuffer);
 
-          const uploadRes: any = await new Promise((resolve, reject) => {
-            cloudinary.uploader
-              .upload_stream({ folder: "posts" }, (error, result) => {
-                if (error) reject(error);
-                else resolve(result);
-              })
-              .end(buffer);
-          });
+          const uploadRes: UploadApiResponse = await new Promise(
+            (resolve, reject) => {
+              cloudinary.uploader
+                .upload_stream({ folder: "posts" }, (error, result) => {
+                  if (error || !result) reject(error);
+                  else resolve(result);
+                })
+                .end(buffer);
+            }
+          );
 
           // hapus lama kalau ada
           if (publicId) {
@@ -250,7 +254,7 @@ export async function PUT(
       data: {
         title,
         author,
-        category: category as any,
+        category: category as Category,
         style,
         blocks: {
           create: createBlocks,

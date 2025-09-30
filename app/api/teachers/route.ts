@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import cloudinary from "@/lib/cloudinary";
 import { requireAuth } from "@/lib/auth";
+import { Prisma } from "@prisma/client";
 
 // GET all teachers
 export async function GET() {
@@ -21,9 +22,9 @@ export async function GET() {
 // CREATE teacher with Cloudinary upload
 export async function POST(req: Request) {
   try {
-     const user = requireAuth(req);
-      if (!user)
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const user = requireAuth(req);
+    if (!user)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const formData = await req.formData();
     const nip = formData.get("nip") as string | null;
     const name = formData.get("name") as string | null;
@@ -70,18 +71,21 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(teacher, { status: 201 });
-  } catch (error: any) {
+  } catch (error) {
     // handle unique constraint (Prisma code P2002)
-    if ((error as any)?.code === "P2002") {
-      return NextResponse.json(
-        { error: "NIP already exists" },
-        { status: 409 }
-      );
-    }
-    console.error("Create teacher error:", error);
-    return NextResponse.json(
-      { error: "Failed to create teacher" },
-      { status: 500 }
-    );
+   if (error instanceof Prisma.PrismaClientKnownRequestError) {
+     if (error.code === "P2002") {
+       return NextResponse.json(
+         { error: "NIP already exists" },
+         { status: 409 }
+       );
+     }
+   }
+
+   console.error("Create teacher error:", error);
+   return NextResponse.json(
+     { error: "Failed to create teacher" },
+     { status: 500 }
+   );
   }
 }

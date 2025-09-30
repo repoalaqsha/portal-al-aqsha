@@ -39,22 +39,22 @@ export default function SchoolProfilePage() {
     return <p className="text-center py-10">Profil sekolah tidak ditemukan.</p>;
 
   // 🔧 Input builder
-  type SchoolProfileField = keyof SchoolProfile;
-  const renderRow = (label: string, field: SchoolProfileField, type: string = "text") => (
+  type ProfileField = keyof SchoolProfile;
+  const renderRow = (label: string, field: ProfileField, type: string = "text") => (
     <tr className="border-b">
       <td className="p-2 font-medium text-gray-700 w-1/3">{label}</td>
       <td className="p-2 w-2/3">
         {isEditing ? (
           <input
             type={type}
-            value={profile[field] || ""}
+            value={profile[field] ?? ""}
             onChange={(e) =>
               setProfile({ ...profile, [field]: e.target.value })
             }
             className="w-full border rounded-lg p-2 focus:outline-none focus:ring focus:ring-teal-500"
           />
         ) : (
-          <span className="text-gray-800">{profile[field] || "-"}</span>
+          <span className="text-gray-800">{profile[field] ?? "-"}</span>
         )}
       </td>
     </tr>
