@@ -65,6 +65,7 @@ export default function TeacherForm({
               alt="Teacher"
               fill
               className="object-cover rounded "
+              sizes="12rem"
             />
             <label className="absolute inset-0 flex items-center justify-center bg-black/50 text-white text-sm opacity-0 group-hover:opacity-100 cursor-pointer rounded">
               Ganti

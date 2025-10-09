@@ -8,22 +8,24 @@ export function useTeachers() {
     queryKey: ["teachers"],
     queryFn: async () => {
       const res = await fetch("/api/teachers");
-      if (!res.ok) throw new Error("Failed to fetch teachers");
-      return res.json();
+      const json = await res.json();
+      return json.teachers ?? []; 
     },
+    initialData: [], 
   });
 }
 
+
 export function useHeadTeachers() {
-  const { data, ...rest } = useTeachers();
+  const { data = [], ...rest } = useTeachers();
 
   return {
-    data:
-      data?.filter((t:Teacher) => t.jabatan?.toLowerCase() === "kepala sekolah") ?? [],
+    data: data.filter(
+      (t: Teacher) => t.jabatan?.toLowerCase() === "kepala sekolah"
+    ),
     ...rest,
   };
 }
-
 
 export function useCreateTeacher() {
   const queryClient = useQueryClient();

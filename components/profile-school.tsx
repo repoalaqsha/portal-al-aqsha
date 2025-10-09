@@ -38,12 +38,11 @@ export default function SchoolProfilePage() {
   if (!profile)
     return <p className="text-center py-10">Profil sekolah tidak ditemukan.</p>;
 
-  // 🔧 Input builder
   type ProfileField = keyof SchoolProfile;
   const renderRow = (label: string, field: ProfileField, type: string = "text") => (
-    <tr className="border-b">
+    <tr className=" border-b">
       <td className="p-2 font-medium text-gray-700 w-1/3">{label}</td>
-      <td className="p-2 w-2/3">
+      <td className="p-2 w-1/3">
         {isEditing ? (
           <input
             type={type}
@@ -61,7 +60,7 @@ export default function SchoolProfilePage() {
   );
 
   return (
-    <div className="max-w-5xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-6">
+    <div className="w-[80%] mx-auto p-6 bg-white shadow-lg rounded-lg mt-6">
       <h1 className="text-2xl font-bold mb-4 text-teal-700">Profil Sekolah</h1>
 
       <form onSubmit={handleSave}>

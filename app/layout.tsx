@@ -42,6 +42,7 @@ export default function RootLayout({
                 alt="Logo"
                 width={70}
                 className="transition-transform duration-300 group-hover:scale-110 drop-shadow-lg"
+                priority
               />
               <span className="absolute inset-0 rounded-full border-2 border-green-500 animate-ping opacity-30"></span>
             </div>

@@ -4,12 +4,19 @@ import cloudinary from "@/lib/cloudinary";
 import { requireAuth } from "@/lib/auth";
 
 // GET all teachers
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    const { searchParams } = new URL(req.url);
+    const skip = parseInt(searchParams.get("skip") || "0");
+    const take = parseInt(searchParams.get("take") || "10"); 
+
     const teachers = await prisma.teacher.findMany({
+      skip,
+      take,
       orderBy: { name: "asc" },
     });
-    return NextResponse.json(teachers);
+
+    return NextResponse.json({ teachers });
   } catch {
     return NextResponse.json(
       { error: "Failed to fetch teachers" },
@@ -17,6 +24,7 @@ export async function GET() {
     );
   }
 }
+
 
 // CREATE teacher with Cloudinary upload
 export async function POST(req: Request) {

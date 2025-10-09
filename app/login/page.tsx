@@ -28,7 +28,7 @@ export default function LoginPage() {
     }
 
     // kalau login sukses -> redirect ke dashboard
-    router.push("/admin-area/dashboard");
+    router.push("/admin-area/create-post");
   };
 
   return (

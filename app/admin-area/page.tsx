@@ -9,10 +9,10 @@ export default function DashboardPage() {
     <div className="w-full text-center ">
       <p>You are logged in!</p>
       <Button
-        onClick={() => router.push("/admin-area/dashboard")}
+        onClick={() => router.push("/admin-area/create-post")}
         className="rounded-2xl px-6 py-2 shadow-md"
       >
-        Go to Dashboard
+        Create Post?
       </Button>
     </div>
   );

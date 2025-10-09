@@ -56,7 +56,7 @@ const [openInfo, setOpenInfo] = useState(false);
                 <Link href="/profile" className="hover:text-teal-600">
                   Kepala Sekolah
                 </Link>
-                <Link href="/teacher" className="hover:text-teal-600">
+                <Link href="/guru" className="hover:text-teal-600">
                   Guru
                 </Link>
                 <Link href="/profile" className="hover:text-teal-600">
@@ -117,7 +117,7 @@ const [openInfo, setOpenInfo] = useState(false);
           </SheetTrigger>
 
           <SheetContent
-            side="left"
+            side="top"
             className="p-6 h-screen overflow-y-auto bg-white"
           >
             <nav className="flex flex-col gap-4 text-lg font-medium">
@@ -161,7 +161,7 @@ const [openInfo, setOpenInfo] = useState(false);
                     <Link href="/profile" className="hover:text-teal-600">
                       Kepala Sekolah
                     </Link>
-                    <Link href="/teacher" className="hover:text-teal-600">
+                    <Link href="/guru" className="hover:text-teal-600">
                       Guru
                     </Link>
                     <Link href="/profile" className="hover:text-teal-600">

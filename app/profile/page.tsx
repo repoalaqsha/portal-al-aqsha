@@ -22,21 +22,22 @@ export default function HomePage() {
     <div className="space-y-10 ">
       {/* Hero */}
       <section className=" flex items-center justify-center bg-gray-200">
-      
         <SchoolProfilePage />
       </section>
 
       {/* About dengan animasi scale on scroll */}
-      <motion.section
+      <div
         ref={targetRef}
-        id="about"
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        style={{ scale, opacity }}
-        className="h-screen flex items-center justify-center bg-green-200"
-      ></motion.section>
+        style={{ position: "relative" }} // ✅ force relative, gak tergantung Tailwind
+        className="h-screen"
+      >
+        <motion.section
+          style={{ scale, opacity }}
+          className="w-full h-full flex items-center justify-center bg-green-200"
+        >
+          <p className="text-2xl font-bold">Ini About Section ✨</p>
+        </motion.section>
+      </div>
 
       {/* Extra section biar ada space scroll */}
       <section className="h-screen bg-gray-100 flex items-center justify-center">

@@ -69,7 +69,7 @@ export default function PostsPage() {
           return (
             <Reveal key={post.id}>
               <Link href={`/ppdb-mts-al-aqsha/${post.id}`} className="group">
-                <Card className="rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden cursor-pointer">
+                <Card className="rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden cursor-pointer w-[50%] mx-auto">
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between group-hover:text-blue-600 transition">
                       {post.title}
@@ -95,18 +95,8 @@ export default function PostsPage() {
                       </div>
                     )}
 
-                    {post.style === 2 && firstImage && (
-                      <div className="relative w-full h-96 mb-4">
-                        <Image
-                          src={firstImage.image?.url || ""}
-                          alt={firstImage.image?.caption || "Thumbnail"}
-                          fill
-                          className="object-cover rounded-xl"
-                        />
-                      </div>
-                    )}
-
-                    {post.style === 3 && firstVideo && (
+                 
+                    {post.style === 2 && firstVideo && (
                       <div className="aspect-video mb-4">
                         <iframe
                           src={getYoutubeEmbedUrl(firstVideo.content ?? "")}

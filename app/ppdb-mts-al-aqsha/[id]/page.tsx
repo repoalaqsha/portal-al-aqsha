@@ -47,7 +47,6 @@ export default function EditPostPage() {
   return (
     <div>
       <PostVisitorTracker postId={id} />
-      <VisitorCount postId={ id} />
       <PostForm
         mode="edit"
         initialData={post}

@@ -18,6 +18,7 @@ import { getYoutubeEmbedUrl } from "@/utils/youtube";
 import { DeletePostButton } from "./btn-delete-post";
 import { Trash2 } from "lucide-react";
 import { Post, PostBlock } from "@/types/SchoolTypes";
+import VisitorCount from "./visitor-count";
 
 type Block = {
   id: string;
@@ -71,10 +72,7 @@ export default function PostForm({
           b.type === "PARAGRAPH" || b.type === "VIDEO"
             ? b.content ?? ""
             : undefined,
-        caption:
-          b.type === "IMAGE"
-            ? b.image?.caption ?? ""
-            : undefined,
+        caption: b.type === "IMAGE" ? b.image?.caption ?? "" : undefined,
         url: b.type === "IMAGE" ? b.image?.url : undefined,
         image: b.image || null,
       }));
@@ -128,8 +126,7 @@ export default function PostForm({
             b.type === "PARAGRAPH" || b.type === "VIDEO"
               ? b.content
               : undefined,
-          caption:
-            b.type === "IMAGE" ? b.caption : undefined,
+          caption: b.type === "IMAGE" ? b.caption : undefined,
           order: index + 1,
           url: b.url,
         }))
@@ -145,11 +142,15 @@ export default function PostForm({
 
   if (!isEditing) {
     return (
-      <div className="max-w-2xl mx-auto p-4 space-y-4">
+      <div className="border rounded-3xl max-w-2xl mx-auto p-8 space-y-2">
+        <div className="flex flex-col gap-2 pb-5">
+
         <h1 className="text-2xl font-bold">{title}</h1>
         <p className="text-gray-500">
           By {author} • {category}
         </p>
+        <VisitorCount postId={initialData?.id} />
+        </div>
 
         {blocks.map((block) =>
           block.type === "PARAGRAPH" ? (
@@ -223,8 +224,7 @@ export default function PostForm({
         className="border rounded p-2"
       >
         <option value={1}>Style 1</option>
-        <option value={2}>Style 2</option>
-        <option value={3}>Style 3</option>
+        <option value={2}>Style 3</option>
       </select>
 
       <div className="flex gap-2">

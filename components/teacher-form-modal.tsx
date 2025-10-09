@@ -3,6 +3,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -33,6 +34,7 @@ export default function TeacherFormModal({
         <DialogHeader>
           <DialogTitle>{teacher ? "Edit Guru" : "Tambah Guru"}</DialogTitle>
         </DialogHeader>
+        <DialogDescription hidden/>
         <TeacherForm
           initialData={teacher}
           isPending={creating || updating}

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export default function VisitorCount({ postId }: { postId: string }) {
+export default function VisitorCount({ postId }: { postId: string | undefined }) {
   const [count, setCount] = useState<number | null>(null);
 
   useEffect(() => {
