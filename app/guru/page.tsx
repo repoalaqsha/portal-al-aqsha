@@ -1,10 +1,11 @@
 "use client";
 import dynamic from "next/dynamic";
+import LoadingText from "../loading";
 
 // lazy load TeacherCarousel (di luar komponen)
 const TeacherCarousel = dynamic(() => import("@/components/teacher-carousel"), {
   ssr: false,
-  loading: () => <p>Loading guru...</p>,
+  loading: () => <LoadingText/>,
 });
 
 export default function GuruPage() {

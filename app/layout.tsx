@@ -7,6 +7,7 @@ import Navbar from "@/components/navbar";
 import Providers from "./providers";
 import { Toaster } from "sonner";
 import MarqueeText from "@/components/runnning-text";
+import LogoBackground from "@/components/bg-logo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,9 +34,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen flex flex-col`}
       >
+        <LogoBackground />
         <Providers>
           {/* Header */}
-          <div className="flex items-center gap-4 ml-20">
+          <div className="flex items-center gap-4 pl-20 bg-gradient-to-r from-white to-transparent relative">
             <div className="relative group">
               <Image
                 src={logo}

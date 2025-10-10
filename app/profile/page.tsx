@@ -1,6 +1,7 @@
 "use client";
 
 import SchoolProfilePage from "@/components/profile-school";
+import VisiMisiSection from "@/components/VisiMisiSection";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 
@@ -21,15 +22,17 @@ export default function HomePage() {
   return (
     <div className="space-y-10 ">
       {/* Hero */}
-      <section className=" flex items-center justify-center bg-gray-200">
+      <section className=" flex items-center justify-center  ">
         <SchoolProfilePage />
       </section>
 
+      <VisiMisiSection/>
       {/* About dengan animasi scale on scroll */}
       <div
         ref={targetRef}
         style={{ position: "relative" }} // ✅ force relative, gak tergantung Tailwind
         className="h-screen"
+        id="about"
       >
         <motion.section
           style={{ scale, opacity }}

@@ -5,7 +5,7 @@ import { SchoolProfile } from "@/types/SchoolTypes";
 import { useEffect, useState } from "react";
 
 export default function SchoolProfilePage() {
-  const [profile, setProfile] = useState<SchoolProfile|null>(null);
+  const [profile, setProfile] = useState<SchoolProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -34,13 +34,17 @@ export default function SchoolProfilePage() {
     alert("✅ Profil sekolah berhasil diupdate");
   }
 
-  if (loading) return <LoadingText/>
+  if (loading) return <LoadingText />;
   if (!profile)
     return <p className="text-center py-10">Profil sekolah tidak ditemukan.</p>;
 
   type ProfileField = keyof SchoolProfile;
-  const renderRow = (label: string, field: ProfileField, type: string = "text") => (
-    <tr className=" border-b">
+  const renderRow = (
+    label: string,
+    field: ProfileField,
+    type: string = "text"
+  ) => (
+    <tr className="border-b">
       <td className="p-2 font-medium text-gray-700 w-1/3">{label}</td>
       <td className="p-2 w-1/3">
         {isEditing ? (
@@ -60,10 +64,11 @@ export default function SchoolProfilePage() {
   );
 
   return (
-    <div className="w-[80%] mx-auto p-6 bg-white shadow-lg rounded-lg mt-6">
+    <div className="w-full mx-auto p-6 bg-white shadow-lg rounded-lg mt-6 relative">
       <h1 className="text-2xl font-bold mb-4 text-teal-700">Profil Sekolah</h1>
 
       <form onSubmit={handleSave}>
+        {/* === Tabel utama === */}
         <table className="w-full border border-gray-200 text-sm">
           <tbody>
             {renderRow("Nama Sekolah", "namaSekolah")}
@@ -88,11 +93,31 @@ export default function SchoolProfilePage() {
             {renderRow("Izin Memimpin", "izinMemimpin")}
             {renderRow("Status Kepegawaian", "statusKepegawaian")}
             {renderRow("Pendidikan Terakhir", "pendidikanTerakhir")}
-            {renderRow("Deskripsi Sekolah", "deskripsiSekolah")}
           </tbody>
         </table>
 
-        {/* Tombol */}
+        {/* === Deskripsi Sekolah di bawah tabel === */}
+        <div className="mt-6">
+          <h2 className="text-lg font-semibold text-teal-700 mb-2">
+            Deskripsi Sekolah
+          </h2>
+          {isEditing ? (
+            <textarea
+              value={profile.deskripsiSekolah ?? ""}
+              onChange={(e) =>
+                setProfile({ ...profile, deskripsiSekolah: e.target.value })
+              }
+              rows={6}
+              className="w-full border rounded-lg p-3 focus:outline-none focus:ring focus:ring-teal-500 text-sm"
+            />
+          ) : (
+            <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+              {profile.deskripsiSekolah || "Belum ada deskripsi sekolah."}
+            </p>
+          )}
+        </div>
+
+        {/* Tombol aksi */}
         <div className="mt-6 flex justify-end gap-3">
           {isEditing ? (
             <>

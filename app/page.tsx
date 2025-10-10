@@ -14,22 +14,20 @@ import LoadingText from "./loading";
 
 export default function Home() {
   const [beritaLoaded, setBeritaLoaded] = useState(false);
-const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setBeritaLoaded(true);
-      setLoading(false);
-    }, 4000);
 
+  useEffect(() => {
+    const timer = setTimeout(() => setBeritaLoaded(true), 4000);
     return () => clearTimeout(timer);
   }, []);
-if (loading) return <LoadingText />;
+
+  if (!beritaLoaded) return <LoadingText />;
+
   return (
     <div className="w-full mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
+        transition={{ duration: 0.5 }}
         onAnimationComplete={() => setBeritaLoaded(true)}
       >
         <Berita />
@@ -39,13 +37,13 @@ if (loading) return <LoadingText />;
         <div className="w-[80%] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 py-10">
           {/* Kontak Sekolah */}
           <Reveal>
-            <aside className="lg:col-span-3 bg-gray-100  shadow-md hover:shadow-xl transition-shadow  rounded-xl p-6 flex flex-col gap-4 transform  duration-300 hover:-translate-y-2 ">
+            <aside className="lg:col-span-3 bg-white  shadow-md hover:shadow-xl transition-shadow  rounded-xl p-6 flex flex-col gap-4 transform  duration-300 hover:-translate-y-2 relative ">
               <h2 className="text-xl font-bold border-b border-gray-300 pb-2">
                 Kontak
               </h2>
               <Reveal>
                 <div className="space-y-3 text-sm ">
-                  <div >
+                  <div>
                     <p className="font-semibold flex items-center gap-2 ">
                       <IoLocationOutline /> Alamat:
                     </p>
@@ -82,7 +80,7 @@ if (loading) return <LoadingText />;
 
           {/* Sambutan Kepala Sekolah */}
           <KepsekReveal>
-            <div className="w-full col-span-1 mb-20 lg:mb-0">
+            <div className="w-full col-span-1 mb-5 lg:mb-0 ">
               <h1 className="text-3xl font-bold text-teal-600 mb-4">
                 Sambutan Kepala Sekolah
               </h1>

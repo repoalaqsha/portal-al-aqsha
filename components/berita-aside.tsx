@@ -33,7 +33,7 @@ export default function PostsAside({
   if (error) return <p>Gagal memuat berita</p>;
 
   return (
-    <aside className="lg:col-span-3 bg-gray-100 shadow-md hover:shadow-xl transition-shadow rounded-xl p-6  flex flex-col gap-2">
+    <aside className="lg:col-span-3 bg-white     shadow-md hover:shadow-xl transition-shadow rounded-xl p-6  flex flex-col gap-2 relative">
       <h2 className="text-lg font-bold border-b border-gray-300">
         Trending Topics
       </h2>

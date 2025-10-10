@@ -20,7 +20,7 @@ export default function KepalaSekolahSection() {
       {kepalaSekolah.map((guru: Teacher) => (
         <Card
           key={guru.id}
-          className="w-full overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
+          className="w-full overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 bg-white relative"
         >
           <CardContent className="flex flex-col md:flex-row items-center md:items-start gap-6 p-6">
             {/* Foto */}
